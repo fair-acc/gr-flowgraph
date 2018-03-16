@@ -16,6 +16,7 @@ FIND_PATH(
     HINTS $ENV{DIGITIZERS_DIR}/include
         ${PC_DIGITIZERS_INCLUDEDIR}
     PATHS ${CMAKE_INSTALL_PREFIX}/include
+          /home/bel/schwinn/lnx/picoscope/snapshot_cosylab/Digitizers/gr-digitizers/include
           /usr/local/include
           /usr/include
 )
@@ -27,6 +28,7 @@ FIND_LIBRARY(
         ${PC_DIGITIZERS_LIBDIR}
     PATHS ${CMAKE_INSTALL_PREFIX}/lib
           ${CMAKE_INSTALL_PREFIX}/lib64
+          /home/bel/schwinn/lnx/picoscope/snapshot_cosylab/Digitizers/gr-digitizers/build/lib
           /usr/local/lib
           /usr/local/lib64
           /usr/lib
