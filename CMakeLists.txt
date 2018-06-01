@@ -110,13 +110,13 @@ endif()
 #   - ROOT built with CMake. Add in CMAKE_PREFIX_PATH the installation prefix for ROOT
 list(APPEND CMAKE_PREFIX_PATH $ENV{ROOTSYS})
 
+# add default path of gsi-installation
+list(APPEND CMAKE_PREFIX_PATH "/opt/cern/root")
+
 #---Locate the ROOT package and defines a number of variables (e.g. ROOT_INCLUDE_DIRS)
 # TODO: the following does not wokr correctly, for some reason all the libraries gets pulled in
 #       and not just MathCore and Graf as specified.
 find_package(ROOT REQUIRED COMPONENTS MathCore Graf)
-
-# add default path of gsi-installation
-list(APPEND CMAKE_PREFIX_PATH "/opt/cern/root")
 
 #---Define useful ROOT functions and macros (e.g. ROOT_GENERATE_DICTIONARY)
 # include(${ROOT_USE_FILE})
