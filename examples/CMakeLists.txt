@@ -33,7 +33,6 @@ link_directories(
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/example.grc
      ${CMAKE_CURRENT_SOURCE_DIR}/example_big.grc
-     ${CMAKE_CURRENT_SOURCE_DIR}/cascade_edge.grc
      DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 add_executable(factory_example factory_example.cc)
