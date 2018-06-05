@@ -140,6 +140,7 @@ set(GR_PKG_LIBEXEC_DIR  ${GR_LIBEXEC_DIR}/${CMAKE_PROJECT_NAME})
 set(GRC_BLOCKS_DIR      ${GR_PKG_DATA_DIR}/grc/blocks)
 
 set(GR_FLOWGRAPH_EXAMPLES_DIR     ${GR_PKG_DATA_DIR}/examples/flowgraph)
+set(GR_FLOWGRAPH_TEST_LIBRARY_DIR ${GR_PKG_DATA_DIR}/test)
 
 
 ########################################################################
@@ -235,6 +236,7 @@ add_custom_target(uninstall
 add_subdirectory(include/flowgraph)
 add_subdirectory(lib)
 add_subdirectory(examples)
+#add_subdirectory(test)
 
 ########################################################################
 # Install cmake search helper for this library
