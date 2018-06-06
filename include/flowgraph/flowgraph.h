@@ -200,6 +200,37 @@ public:
     	d_top_block->wait();
     }
 
+    std::vector<std::string> getChannelNames()
+    {
+    	std::vector<std::string> channelCol;
+
+        for (const auto &elem : d_block_map) {
+            if (elem.second.type == cascade_sink_key) {
+                auto cascade = boost::dynamic_pointer_cast<gr::digitizers::cascade_sink>(elem.second.block);
+                for (auto const &sink: cascade->get_time_domain_sinks()) {
+                	channelCol.push_back(sink->get_metadata().name);
+                }
+            }
+            else if (elem.second.type == time_domain_sink_key) {
+                auto sink = boost::dynamic_pointer_cast<gr::digitizers::time_domain_sink>(elem.second.block);
+                channelCol.push_back(sink->get_metadata().name);
+            }
+            else if (elem.second.type == freq_sink_f_key) {
+                auto sink = boost::dynamic_pointer_cast<gr::digitizers::freq_sink_f>(elem.second.block);
+                channelCol.push_back(sink->get_metadata().name);
+            }
+            else if (elem.second.type == post_mortem_sink_key) {
+                auto sink = boost::dynamic_pointer_cast<gr::digitizers::post_mortem_sink>(elem.second.block);
+                channelCol.push_back(sink->get_metadata().name);
+            }
+            else
+            {
+            	// ignore other blocks
+            }
+        }
+        return channelCol;
+    }
+
     template <class Callable>
     void digitizers_apply(Callable callable)
     {
