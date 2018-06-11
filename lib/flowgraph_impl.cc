@@ -912,7 +912,7 @@ struct StftAlgorithmsMaker : BlockMaker
      assert(info.key == stft_algorithms_key);
      auto samp_rate    = info.eval_param_value<double>("samp_rate", variables);
      auto delta_t    = info.eval_param_value<double>("delta_t", variables);
-     auto alg_id    = info.eval_param_value<int>("alg_id", variables);
+     auto alg_id    = static_cast<gr::digitizers::stft_algorithm_id_t>(info.eval_param_value<int>("alg_id", variables));// static_cast, since eval_param_value cannot handle enums :(
      auto win_size    = info.eval_param_value<int>("win_size", variables);
      auto win_type    = info.eval_param_enum("win_type");
      auto fq_low    = info.eval_param_value<double>("fq_low", variables);
