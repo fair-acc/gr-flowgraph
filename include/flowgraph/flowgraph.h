@@ -267,6 +267,12 @@ public:
                 auto sptr = boost::dynamic_pointer_cast<gr::digitizers::freq_sink_f>(elem.second.block);
                 callable(elem.first, sptr.get());
             }
+            else if (elem.second.type == cascade_sink_key) {
+                auto cascade = boost::dynamic_pointer_cast<gr::digitizers::cascade_sink>(elem.second.block);
+                for (auto const &sink: cascade->get_frequency_domain_sinks()) {
+                  callable(elem.first + "_" + sink->get_metadata().name, sink.get());
+                }
+            }
         }
     }
 
