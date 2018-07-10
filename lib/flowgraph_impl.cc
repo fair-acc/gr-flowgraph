@@ -745,7 +745,7 @@ struct Ps4000aMaker : BlockMaker
             auto range_ai_h = info.param_value<double>("range_ai_h");
             auto coupling_ai_h = info.param_value<bool>("coupling_ai_h");
             auto offset_ai_h = info.param_value<double>("offset_ai_h");
-            ps->set_aichan("D", enable_ai_h, range_ai_h, coupling_ai_h, offset_ai_h);
+            ps->set_aichan("H", enable_ai_h, range_ai_h, coupling_ai_h, offset_ai_h);
         }
 
 
