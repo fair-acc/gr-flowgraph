@@ -2875,7 +2875,9 @@ namespace exprtk
          {
             if (stride > 4)
             {
-               throw std::invalid_argument("token_scanner() - Invalid stride value");
+                std::ostringstream message;
+                message << "Exception in " << __FILE__ << ":" << __LINE__ << ": token_scanner() - Invalid stride value:" << stride;
+                throw std::invalid_argument(message.str());
             }
          }
 
@@ -2998,7 +3000,9 @@ namespace exprtk
          {
             if (stride > 5)
             {
-               throw std::invalid_argument("token_inserter() - Invalid stride value");
+                std::ostringstream message;
+                message << "Exception in " << __FILE__ << ":" << __LINE__ << ": token_scanner() - Invalid stride value:" << stride;
+                throw std::invalid_argument(message.str());
             }
          }
 
@@ -20181,10 +20185,13 @@ namespace exprtk
 
       inline parser_error::type get_error(const std::size_t& index)
       {
-         if (index < error_list_.size())
-            return error_list_[index];
-         else
-            throw std::invalid_argument("parser::get_error() - Invalid error index specificed");
+         if (index >= error_list_.size())
+         {
+             std::ostringstream message;
+             message << "Exception in " << __FILE__ << ":" << __LINE__ << ": parser::get_error() - Invalid error index specificed: " << index;
+             throw std::runtime_error(message.str());
+         }
+         return error_list_[index];
       }
 
       inline std::string error() const
@@ -36816,7 +36823,9 @@ namespace exprtk
          #endif
          if (sizeof(T) < sizeof(void*))
          {
-            throw std::runtime_error("exprtk::rtl::io::file - Error - pointer size larger than holder.");
+             std::ostringstream message;
+             message << "Exception in " << __FILE__ << ":" << __LINE__ << ": pointer size larger than holder: ";
+             throw std::runtime_error(message.str());
          }
          #ifdef _MSC_VER
          #pragma warning(pop)

@@ -138,7 +138,9 @@ public:
 	{
 		if (d_block_map.count(id))
 		{
-			throw std::invalid_argument("block with id " + id + " previously added!");
+            std::ostringstream message;
+            message << "Exception in " << __FILE__ << ":" << __LINE__ << ": block with id " << id << " previously added!";
+            throw std::invalid_argument(message.str());
 		}
 
 		FlowGraphEntry entry = {block, type};
@@ -151,10 +153,18 @@ public:
 	void connect(const std::string &src, int src_port,
 			const std::string &dst, int dst_port)
 	{
-		if (!d_block_map.count(src) || !d_block_map.count(dst))
+		if (!d_block_map.count(src))
 		{
-			throw std::invalid_argument("src " + src + " or dst " + dst + " not found!");
+		     std::ostringstream message;
+		     message << "Exception in " << __FILE__ << ":" << __LINE__ << ": src " << src  << " not found!";
+		     throw std::invalid_argument(message.str());
 		}
+        if (!d_block_map.count(dst))
+        {
+             std::ostringstream message;
+             message << "Exception in " << __FILE__ << ":" << __LINE__ << ": dst " << dst << " not found!";
+             throw std::invalid_argument(message.str());
+        }
 
 		d_top_block->connect(d_block_map[src].block, src_port, d_block_map[dst].block, dst_port);
 	}

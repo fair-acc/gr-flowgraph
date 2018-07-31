@@ -137,8 +137,11 @@ struct NullSinkMaker : BlockMaker
         assert(info.key == "blocks_null_sink");
 
         auto type = info.param_value<>("type");
-        if (type != "float") {
-            throw std::invalid_argument("the only supported type is float: " + type);
+        if (type != "float")
+        {
+            std::ostringstream message;
+            message << "Exception in " << __FILE__ << ":" << __LINE__ << ": invalid type: " << type << ". The only supported type is float: ";
+            throw std::invalid_argument(message.str());
         }
 
         auto vlen = info.eval_param_value<int>("vlen", variables);
@@ -154,8 +157,11 @@ struct VectorToStreamMaker : BlockMaker
         assert(info.key == "blocks_vector_to_stream");
 
         auto type = info.param_value<>("type");
-        if (type != "float") {
-            throw std::invalid_argument("the only supported type is float: " + type);
+        if (type != "float")
+        {
+            std::ostringstream message;
+            message << "Exception in " << __FILE__ << ":" << __LINE__ << ": invalid type: " << type << ". The only supported type is float: ";
+            throw std::invalid_argument(message.str());
         }
 
         auto num_items = info.eval_param_value<int>("num_items", variables);
@@ -172,8 +178,11 @@ struct VectorToStreamsMaker : BlockMaker
         assert(info.key == "blocks_vector_to_streams");
 
         auto type = info.param_value<>("type");
-        if (type != "float") {
-            throw std::invalid_argument("the only supported type is float: " + type);
+        if (type != "float")
+        {
+            std::ostringstream message;
+            message << "Exception in " << __FILE__ << ":" << __LINE__ << ": invalid type: " << type << ". The only supported type is float: ";
+            throw std::invalid_argument(message.str());
         }
 
         auto num_streams = info.eval_param_value<int>("num_streams", variables);
@@ -190,8 +199,11 @@ struct StreamToVectorMaker : BlockMaker
         assert(info.key == "blocks_stream_to_vector");
 
         auto type = info.param_value<>("type");
-        if (type != "float") {
-            throw std::invalid_argument("the only supported type is float: " + type);
+        if (type != "float")
+        {
+            std::ostringstream message;
+            message << "Exception in " << __FILE__ << ":" << __LINE__ << ": invalid type: " << type << ". The only supported type is float: ";
+            throw std::invalid_argument(message.str());
         }
 
         auto num_items = info.eval_param_value<int>("num_items", variables);
@@ -223,9 +235,12 @@ struct SigSourceMaker : BlockMaker
 		assert(info.key == "analog_sig_source_x");
 
 		auto type = info.param_value<>("type");
-		if (type != "float") {
-			throw std::invalid_argument("the only supported type is float: " + type);
-		}
+        if (type != "float")
+        {
+            std::ostringstream message;
+            message << "Exception in " << __FILE__ << ":" << __LINE__ << ": invalid type: " << type << ". The only supported type is float: ";
+            throw std::invalid_argument(message.str());
+        }
 
 		auto sampling_freq = info.eval_param_value<double>("samp_rate", variables);
 		auto wave_freq     = info.eval_param_value<double>("freq", variables);
@@ -244,8 +259,11 @@ struct ThrottleMaker : BlockMaker
         assert(info.key == blocks_throttle_key);
 
         auto type = info.param_value<>("type");
-        if (type != "float") {
-            throw std::invalid_argument("the only supported type is float: " + type);
+        if (type != "float")
+        {
+            std::ostringstream message;
+            message << "Exception in " << __FILE__ << ":" << __LINE__ << ": invalid type: " << type << ". The only supported type is float: ";
+            throw std::invalid_argument(message.str());
         }
 
         auto samples_per_sec = info.eval_param_value<double>("samples_per_second", variables);
@@ -265,8 +283,17 @@ struct TagShareMaker : BlockMaker
         auto share_type = info.param_value<>("share_type");
         auto vlen = info.eval_param_value<int>("vlen", variables);
 
-        if (io_type != "float" || share_type != "float") {
-            throw std::invalid_argument("the only supported type is float");
+        if (io_type != "float")
+        {
+            std::ostringstream message;
+            message << "Exception in " << __FILE__ << ":" << __LINE__ << ": invalid type: " << io_type << ". The only supported type is float: ";
+            throw std::invalid_argument(message.str());
+        }
+        if ( share_type != "float")
+        {
+            std::ostringstream message;
+            message << "Exception in " << __FILE__ << ":" << __LINE__ << ": invalid type: " << share_type << ". The only supported type is float: ";
+            throw std::invalid_argument(message.str());
         }
 
         return gr::blocks::tag_share::make(sizeof(float), sizeof(float), vlen);
@@ -285,8 +312,11 @@ struct TagDebugMaker : BlockMaker
         auto vlen = info.eval_param_value<int>("vlen", variables);
         auto display = info.param_value<bool>("display");
 
-        if (type != "float") {
-            throw std::invalid_argument("the only supported type is float");
+        if ( type != "float")
+        {
+            std::ostringstream message;
+            message << "Exception in " << __FILE__ << ":" << __LINE__ << ": invalid type: " << type << ". The only supported type is float: ";
+            throw std::invalid_argument(message.str());
         }
 
         auto block = gr::blocks::tag_debug::make(sizeof(float) * vlen, name, filter);
@@ -1078,7 +1108,9 @@ gr::basic_block_sptr BlockFactory::make_block(const BlockInfo &info, const std::
     auto it = handlers_b.find(info.key);
 
     if (it == handlers_b.end()) {
-        throw std::invalid_argument("block type " + info.key + " not supported.");
+        std::ostringstream message;
+        message << "Exception in " << __FILE__ << ":" << __LINE__ << ": block type " << info.key << " not supported.";
+        throw std::invalid_argument(message.str());
     }
 
     boost::shared_ptr<BlockMaker> maker = it->second;
