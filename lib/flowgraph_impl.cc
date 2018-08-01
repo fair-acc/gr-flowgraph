@@ -25,6 +25,7 @@
 #include <gnuradio/blocks/vector_to_streams.h>
 #include <gnuradio/blocks/tag_share.h>
 #include <gnuradio/blocks/tag_debug.h>
+#include <gnuradio/blocks/uchar_to_float.h>
 
 namespace flowgraph {
 
@@ -159,6 +160,15 @@ struct NullSinkMaker : BlockMaker
         auto type = info.param_value<>("type");
         auto vlen = info.eval_param_value<int>("vlen", variables);
         return gr::blocks::null_sink::make(vlen * getSizeOfType(type));
+    }
+};
+
+struct UcharToFloatMaker : BlockMaker
+{
+    gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
+    {
+        assert(info.key == "blocks_uchar_to_float");
+        return gr::blocks::uchar_to_float::make();
     }
 };
 
@@ -971,6 +981,7 @@ struct WrReceiverMaker : BlockMaker
 BlockFactory::BlockFactory()
 {
   handlers_b["blocks_null_sink"] = boost::shared_ptr<BlockMaker>(new NullSinkMaker());
+  handlers_b["blocks_uchar_to_float"] = boost::shared_ptr<BlockMaker>(new UcharToFloatMaker());
   handlers_b["blocks_vector_to_stream"] = boost::shared_ptr<BlockMaker>(new VectorToStreamMaker());
   handlers_b["blocks_stream_to_vector"] = boost::shared_ptr<BlockMaker>(new StreamToVectorMaker());
   handlers_b["blocks_vector_to_streams"] = boost::shared_ptr<BlockMaker>(new VectorToStreamsMaker());
