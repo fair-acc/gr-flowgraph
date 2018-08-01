@@ -330,6 +330,7 @@ private:
 // Needed to work around missing lambda support on some target platforms
 struct BlockMaker
 {
+    static int getSizeOfType(std::string type);
     virtual gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) = 0;
     virtual ~BlockMaker() {}
 };
