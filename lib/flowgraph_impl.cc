@@ -20,6 +20,7 @@
 
 #include <gnuradio/analog/sig_source_f.h>
 #include <gnuradio/blocks/null_sink.h>
+#include <gnuradio/blocks/null_source.h>
 #include <gnuradio/blocks/throttle.h>
 #include <gnuradio/blocks/stream_to_vector.h>
 #include <gnuradio/blocks/vector_to_streams.h>
@@ -160,6 +161,18 @@ struct NullSinkMaker : BlockMaker
         auto type = info.param_value<>("type");
         auto vlen = info.eval_param_value<int>("vlen", variables);
         return gr::blocks::null_sink::make(vlen * getSizeOfType(type));
+    }
+};
+
+struct NullSourceMaker : BlockMaker
+{
+    gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
+    {
+        assert(info.key == "blocks_null_source");
+
+        auto type = info.param_value<>("type");
+        auto vlen = info.eval_param_value<int>("vlen", variables);
+        return gr::blocks::null_source::make(vlen * getSizeOfType(type));
     }
 };
 
@@ -981,6 +994,7 @@ struct WrReceiverMaker : BlockMaker
 BlockFactory::BlockFactory()
 {
   handlers_b["blocks_null_sink"] = boost::shared_ptr<BlockMaker>(new NullSinkMaker());
+  handlers_b["blocks_null_source"] = boost::shared_ptr<BlockMaker>(new NullSourceMaker());
   handlers_b["blocks_uchar_to_float"] = boost::shared_ptr<BlockMaker>(new UcharToFloatMaker());
   handlers_b["blocks_vector_to_stream"] = boost::shared_ptr<BlockMaker>(new VectorToStreamMaker());
   handlers_b["blocks_stream_to_vector"] = boost::shared_ptr<BlockMaker>(new StreamToVectorMaker());
