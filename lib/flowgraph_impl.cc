@@ -1104,8 +1104,11 @@ std::unique_ptr<FlowGraph> make_flowgraph(std::istream &input, const std::map<st
 
 	auto variables = parser.variables();
 	std::vector<std::string> disabled_blocks;
- 	for (auto info : parser.blocks()) {
-
+ 	for (auto info : parser.blocks())
+ 	{
+ 	    if ( info.key == "note" ) {
+            continue; // skip all "notes" (notes are comments in the *.grc file)
+ 	    }
  	    if (!info.param_value<bool>("_enabled")) {
  	        disabled_blocks.push_back(info.id);
  	        continue;
