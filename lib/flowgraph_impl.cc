@@ -20,11 +20,13 @@
 
 #include <gnuradio/analog/sig_source_f.h>
 #include <gnuradio/blocks/null_sink.h>
+#include <gnuradio/blocks/null_source.h>
 #include <gnuradio/blocks/throttle.h>
 #include <gnuradio/blocks/stream_to_vector.h>
 #include <gnuradio/blocks/vector_to_streams.h>
 #include <gnuradio/blocks/tag_share.h>
 #include <gnuradio/blocks/tag_debug.h>
+#include <gnuradio/blocks/uchar_to_float.h>
 
 namespace flowgraph {
 
@@ -128,6 +130,26 @@ void GrcParser::collapse_variables()
     }
 }
 
+int BlockMaker::getSizeOfType(std::string type)
+{
+    if (type == "complex")
+        return sizeof(gr_complex);
+    else if (type == "float")
+        return sizeof(float);
+    else if (type == "int")
+        return sizeof(int);
+    else if (type == "short")
+        return sizeof(short);
+    else if (type == "byte")
+        return sizeof(char);
+    else
+    {
+        std::ostringstream message;
+        message << "Exception in " << __FILE__ << ":" << __LINE__ << ": invalid type: " << type;
+        throw std::invalid_argument(message.str());
+    }
+}
+
 // gnuradio blocks
 
 struct NullSinkMaker : BlockMaker
@@ -137,13 +159,29 @@ struct NullSinkMaker : BlockMaker
         assert(info.key == "blocks_null_sink");
 
         auto type = info.param_value<>("type");
-        if (type != "float") {
-            throw std::invalid_argument("the only supported type is float: " + type);
-        }
-
         auto vlen = info.eval_param_value<int>("vlen", variables);
+        return gr::blocks::null_sink::make(vlen * getSizeOfType(type));
+    }
+};
 
-        return gr::blocks::null_sink::make(vlen * sizeof(float));
+struct NullSourceMaker : BlockMaker
+{
+    gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
+    {
+        assert(info.key == "blocks_null_source");
+
+        auto type = info.param_value<>("type");
+        auto vlen = info.eval_param_value<int>("vlen", variables);
+        return gr::blocks::null_source::make(vlen * getSizeOfType(type));
+    }
+};
+
+struct UcharToFloatMaker : BlockMaker
+{
+    gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
+    {
+        assert(info.key == "blocks_uchar_to_float");
+        return gr::blocks::uchar_to_float::make();
     }
 };
 
@@ -154,14 +192,9 @@ struct VectorToStreamMaker : BlockMaker
         assert(info.key == "blocks_vector_to_stream");
 
         auto type = info.param_value<>("type");
-        if (type != "float") {
-            throw std::invalid_argument("the only supported type is float: " + type);
-        }
-
         auto num_items = info.eval_param_value<int>("num_items", variables);
         auto vlen      = info.eval_param_value<int>("vlen", variables);
-
-        return gr::blocks::vector_to_stream::make(vlen * sizeof(float), num_items);
+        return gr::blocks::vector_to_stream::make(vlen * getSizeOfType(type), num_items);
     }
 };
 
@@ -172,14 +205,9 @@ struct VectorToStreamsMaker : BlockMaker
         assert(info.key == "blocks_vector_to_streams");
 
         auto type = info.param_value<>("type");
-        if (type != "float") {
-            throw std::invalid_argument("the only supported type is float: " + type);
-        }
-
         auto num_streams = info.eval_param_value<int>("num_streams", variables);
         auto vlen        = info.eval_param_value<int>("vlen", variables);
-
-        return gr::blocks::vector_to_streams::make(vlen * sizeof(float), num_streams);
+        return gr::blocks::vector_to_streams::make(vlen * getSizeOfType(type), num_streams);
     }
 };
 
@@ -190,14 +218,9 @@ struct StreamToVectorMaker : BlockMaker
         assert(info.key == "blocks_stream_to_vector");
 
         auto type = info.param_value<>("type");
-        if (type != "float") {
-            throw std::invalid_argument("the only supported type is float: " + type);
-        }
-
         auto num_items = info.eval_param_value<int>("num_items", variables);
         auto vlen      = info.eval_param_value<int>("vlen", variables);
-
-        return gr::blocks::stream_to_vector::make(vlen * sizeof(float), num_items);
+        return gr::blocks::stream_to_vector::make(vlen * getSizeOfType(type), num_items);
     }
 };
 
@@ -221,12 +244,6 @@ struct SigSourceMaker : BlockMaker
 	gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
 	{
 		assert(info.key == "analog_sig_source_x");
-
-		auto type = info.param_value<>("type");
-		if (type != "float") {
-			throw std::invalid_argument("the only supported type is float: " + type);
-		}
-
 		auto sampling_freq = info.eval_param_value<double>("samp_rate", variables);
 		auto wave_freq     = info.eval_param_value<double>("freq", variables);
 		auto ampl          = info.eval_param_value<double>("amp", variables);
@@ -244,14 +261,9 @@ struct ThrottleMaker : BlockMaker
         assert(info.key == blocks_throttle_key);
 
         auto type = info.param_value<>("type");
-        if (type != "float") {
-            throw std::invalid_argument("the only supported type is float: " + type);
-        }
-
         auto samples_per_sec = info.eval_param_value<double>("samples_per_second", variables);
         auto ignore_tags = info.param_value<bool>("ignoretag");
-
-        return gr::blocks::throttle::make(sizeof(float), samples_per_sec, ignore_tags);
+        return gr::blocks::throttle::make(getSizeOfType(type), samples_per_sec, ignore_tags);
     }
 };
 
@@ -264,12 +276,7 @@ struct TagShareMaker : BlockMaker
         auto io_type = info.param_value<>("io_type");
         auto share_type = info.param_value<>("share_type");
         auto vlen = info.eval_param_value<int>("vlen", variables);
-
-        if (io_type != "float" || share_type != "float") {
-            throw std::invalid_argument("the only supported type is float");
-        }
-
-        return gr::blocks::tag_share::make(sizeof(float), sizeof(float), vlen);
+        return gr::blocks::tag_share::make(getSizeOfType(io_type), getSizeOfType(share_type), vlen);
     }
 };
 
@@ -285,11 +292,7 @@ struct TagDebugMaker : BlockMaker
         auto vlen = info.eval_param_value<int>("vlen", variables);
         auto display = info.param_value<bool>("display");
 
-        if (type != "float") {
-            throw std::invalid_argument("the only supported type is float");
-        }
-
-        auto block = gr::blocks::tag_debug::make(sizeof(float) * vlen, name, filter);
+        auto block = gr::blocks::tag_debug::make(getSizeOfType(type) * vlen, name, filter);
         block->set_display(display);
         return block;
     }
@@ -745,7 +748,7 @@ struct Ps4000aMaker : BlockMaker
             auto range_ai_h = info.param_value<double>("range_ai_h");
             auto coupling_ai_h = info.param_value<bool>("coupling_ai_h");
             auto offset_ai_h = info.param_value<double>("offset_ai_h");
-            ps->set_aichan("D", enable_ai_h, range_ai_h, coupling_ai_h, offset_ai_h);
+            ps->set_aichan("H", enable_ai_h, range_ai_h, coupling_ai_h, offset_ai_h);
         }
 
 
@@ -991,6 +994,8 @@ struct WrReceiverMaker : BlockMaker
 BlockFactory::BlockFactory()
 {
   handlers_b["blocks_null_sink"] = boost::shared_ptr<BlockMaker>(new NullSinkMaker());
+  handlers_b["blocks_null_source"] = boost::shared_ptr<BlockMaker>(new NullSourceMaker());
+  handlers_b["blocks_uchar_to_float"] = boost::shared_ptr<BlockMaker>(new UcharToFloatMaker());
   handlers_b["blocks_vector_to_stream"] = boost::shared_ptr<BlockMaker>(new VectorToStreamMaker());
   handlers_b["blocks_stream_to_vector"] = boost::shared_ptr<BlockMaker>(new StreamToVectorMaker());
   handlers_b["blocks_vector_to_streams"] = boost::shared_ptr<BlockMaker>(new VectorToStreamsMaker());
@@ -1078,7 +1083,9 @@ gr::basic_block_sptr BlockFactory::make_block(const BlockInfo &info, const std::
     auto it = handlers_b.find(info.key);
 
     if (it == handlers_b.end()) {
-        throw std::invalid_argument("block type " + info.key + " not supported.");
+        std::ostringstream message;
+        message << "Exception in " << __FILE__ << ":" << __LINE__ << ": block type " << info.key << " not supported.";
+        throw std::invalid_argument(message.str());
     }
 
     boost::shared_ptr<BlockMaker> maker = it->second;
@@ -1111,8 +1118,11 @@ std::unique_ptr<FlowGraph> make_flowgraph(std::istream &input, const std::map<st
 
 	auto variables = parser.variables();
 	std::vector<std::string> disabled_blocks;
- 	for (auto info : parser.blocks()) {
-
+ 	for (auto info : parser.blocks())
+ 	{
+ 	    if ( info.key == "note" ) {
+            continue; // skip all "notes" (notes are comments in the *.grc file)
+ 	    }
  	    if (!info.param_value<bool>("_enabled")) {
  	        disabled_blocks.push_back(info.id);
  	        continue;
@@ -1121,7 +1131,6 @@ std::unique_ptr<FlowGraph> make_flowgraph(std::istream &input, const std::map<st
  		if (hw_mapping.count(info.id)) {
  			info.params["serial_number"] = hw_mapping.find(info.id)->second;
  		}
-
 		auto block = factory.make_block(info, variables);
 		graph->add(block, info.id, info.key);
 	}
@@ -1132,11 +1141,9 @@ std::unique_ptr<FlowGraph> make_flowgraph(std::istream &input, const std::map<st
 	            || std::count(disabled_blocks.begin(), disabled_blocks.end(), info.dst_id)) {
 	        continue;
 	    }
-
 	    graph->connect(info.src_id, info.src_key,
 	                   info.dst_id, info.dst_key);
     }
-
 	return std::move(graph);
 }
 

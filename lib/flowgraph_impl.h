@@ -102,7 +102,9 @@ struct BlockInfo
 	{
         auto param = params.find(param_name);
         if (param == params.end()) {
-            throw std::runtime_error("can't find parameter " + param_name + " for block " + id);
+            std::ostringstream message;
+            message << "Exception in " << __FILE__ << ":" << __LINE__ << ": can't find parameter " << param_name << " for block " << id;
+            throw std::runtime_error(message.str());
         }
 
         auto param_value = param->second;
@@ -119,8 +121,9 @@ struct BlockInfo
 	        return detail::convert_to<T>(param_value);
 	    }
 	    catch (...) {
-	        throw std::runtime_error("failed to parse parameter " + param_name
-	                + " for block " + id + ", string value: " + param_value);
+            std::ostringstream message;
+            message << "Exception in " << __FILE__ << ":" << __LINE__ << ": failed to parse parameter " << param_name << " for block " << id << ", string value: " << param_value;
+            throw std::runtime_error(message.str());
         }
 	}
 
@@ -154,8 +157,9 @@ struct BlockInfo
           return static_cast<T>(detail::evaluate_expression(expression, variable_map));
         }
         catch (...) {
-            throw std::runtime_error("failed to evaluate parameter " + param_name
-                      + " for block " + id + ", expression: " + expression);
+            std::ostringstream message;
+            message << "Exception in " << __FILE__ << ":" << __LINE__ << ": failed to evaluate parameter " << param_name << " for block " << id << ", expression: " << expression;
+            throw std::runtime_error(message.str());
         }
     }
 
@@ -198,9 +202,9 @@ struct BlockInfo
                                 variable_map)));
             }
         } catch (...) {
-            throw std::runtime_error(
-                    "failed to evaluate parameter vector " + param_name
-                            + " for block " + id + ", expression: " + expression);
+            std::ostringstream message;
+            message << "Exception in " << __FILE__ << ":" << __LINE__ << ": failed to evaluate parameter vector " << param_name << " for block " << id << ", expression: " << expression;
+            throw std::runtime_error(message.str());
         }
 
         return result;
@@ -306,7 +310,9 @@ public:
 	BlockInfo top_block() const
 	{
 		if (!d_parsed) {
-			throw std::runtime_error("run parse first");
+		       std::ostringstream message;
+		       message << "Exception in " << __FILE__ << ":" << __LINE__ << ": run parse first !";
+		       throw std::runtime_error(message.str());
 		}
 
 		return d_top_block;
@@ -324,6 +330,7 @@ private:
 // Needed to work around missing lambda support on some target platforms
 struct BlockMaker
 {
+    static int getSizeOfType(std::string type);
     virtual gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) = 0;
     virtual ~BlockMaker() {}
 };
