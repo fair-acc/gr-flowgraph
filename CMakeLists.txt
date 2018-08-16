@@ -43,16 +43,9 @@ list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
 
 # Set the version information here
 set(VERSION_INFO_MAJOR_VERSION 2)
-set(VERSION_INFO_API_COMPAT    0)
+set(VERSION_INFO_API_COMPAT    1)
 set(VERSION_INFO_MINOR_VERSION 0)
-set(VERSION_INFO_MAINT_VERSION NA)
-
-find_package(Subversion)
-if(SUBVERSION_FOUND)
-  Subversion_WC_INFO(${PROJECT_SOURCE_DIR} Project)
-  message("Current revision is ${Project_WC_REVISION}")
-  set(VERSION_INFO_MAINT_VERSION svn${Project_WC_REVISION})
-endif()
+set(VERSION_INFO_MAINT_VERSION master)
 
 # Set cmake policies.
 # This will suppress developer warnings during the cmake process that can occur
