@@ -956,12 +956,10 @@ struct TimeDomainSinkMaker : BlockMaker
         auto signal_name  = info.param_value("signal_name");
         auto signal_unit  = info.param_value("signal_unit");
         auto samp_rate    = info.eval_param_value<double>("samp_rate", variables);
-        auto buffer_size  = info.eval_param_value<size_t>("buffer_size", variables);
-        auto nr_buffers  = info.eval_param_value<size_t>("nr_buffers", variables);
+        auto output_package_size  = info.eval_param_value<size_t>("output_package_size", variables);
         auto mode         = info.param_value<int>("acquisition_type");
 
-        auto sink =  gr::digitizers::time_domain_sink::make(signal_name, signal_unit,
-              samp_rate, buffer_size, nr_buffers, static_cast<gr::digitizers::time_sink_mode_t>(mode));
+        auto sink =  gr::digitizers::time_domain_sink::make(signal_name, signal_unit, samp_rate, (size_t)output_package_size, static_cast<gr::digitizers::time_sink_mode_t>(mode));
 
         return sink;
     }
