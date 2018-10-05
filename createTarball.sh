@@ -24,7 +24,7 @@ TARBALL_NAME=Flowgraph-${VERSION}.tar
 mkdir -p ${INSTALL_DIR_LIB}
 mkdir -p ${INSTALL_DIR_BIN}
 
-cp ${SCRIPTPATH}/build/lib/libgnuradio-flowgraph-${VERSION}.master.so.0.0.0 ${INSTALL_DIR_LIB}
+cp ${SCRIPTPATH}/build/lib/libgnuradio-flowgraph-${VERSION}.so.0.0.0 ${INSTALL_DIR_LIB}
 
 cp ${SCRIPTPATH}/build/lib/test-flowgraph ${INSTALL_DIR_BIN}
 cp ${SCRIPTPATH}/build/lib/test_flowgraph_test.sh ${INSTALL_DIR_BIN}
