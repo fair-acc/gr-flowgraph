@@ -971,10 +971,10 @@ struct TimeRealignmentMaker : BlockMaker
     {
         assert(info.key == time_realignment_key);
 
-        auto samp_rate  = info.eval_param_value<float>("samp_rate", variables);
-        auto user_delay = info.eval_param_value<float>("user_delay", variables);
+        float user_delay = info.eval_param_value<float>("user_delay", variables);
+        float triggerstamp_matching_tolerance = info.eval_param_value<float>("triggerstamp_matching_tolerance", variables);
 
-        auto block =  gr::digitizers::time_realignment_ff::make(samp_rate, user_delay);
+        auto block =  gr::digitizers::time_realignment_ff::make(user_delay, triggerstamp_matching_tolerance);
         return block;
     }
 };

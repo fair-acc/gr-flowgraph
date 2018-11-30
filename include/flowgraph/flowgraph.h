@@ -404,14 +404,12 @@ public:
         return nullptr;
     }
 
-    void post_timing_event(const std::string &event_code, int64_t event_timestamp, int64_t beam_in_timestamp,
-            bool time_sync_only=true, bool realignment_required=false)
+    void post_timing_event(const std::string &event_code, int64_t wr_trigger_stamp, int64_t wr_trigger_stamp_utc)
     {
         for (const auto &elem : d_block_map) {
             if (elem.second.type == wr_receiver_f_key) {
                 auto block = boost::dynamic_pointer_cast<gr::digitizers::wr_receiver_f>(elem.second.block);
-                block->add_timing_event(event_code, event_timestamp,
-                        beam_in_timestamp, time_sync_only, realignment_required);
+                block->add_timing_event(event_code, wr_trigger_stamp, wr_trigger_stamp_utc);
             }
         }
     }
