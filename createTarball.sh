@@ -3,12 +3,12 @@ set -e
 
 if [ $# -eq 0 ]
   then
-    echo "Error: No arguments supplied. First and only argument has to be Version. TODO: Automatically get version"
+    echo "Error: No arguments supplied. First and only argument has to be Version (or "master")"
     exit 1
 fi
 if [ $# -ne 1 ]
   then
-    echo "Error: Wrong number arguments supplied. First and only argument has to be Version TODO: Automatically get version"
+    echo "Error: Wrong number arguments supplied. First and only argument has to be Version (or "master")"
     exit 1
 fi
 
@@ -25,7 +25,14 @@ TARBALL_NAME=Flowgraph-${VERSION}.tar
 mkdir -p ${INSTALL_DIR_LIB}
 mkdir -p ${INSTALL_DIR_BIN}
 
-cp ${SCRIPTPATH}/build/lib/libgnuradio-flowgraph-${VERSION}.master.so.0.0.0 ${INSTALL_DIR_LIB}
+if [ $VERSION = "master" ]
+    then
+        cp ${SCRIPTPATH}/build/lib/libgnuradio-flowgraph-*.master.so.0.0.0 ${INSTALL_DIR_LIB}
+    else
+        cp ${SCRIPTPATH}/build/lib/libgnuradio-flowgraph-${VERSION}.master.so.0.0.0 ${INSTALL_DIR_LIB}
+fi
+    
+
 
 cp ${SCRIPTPATH}/build/lib/test-flowgraph ${INSTALL_DIR_BIN}
 cp ${SCRIPTPATH}/build/lib/test_flowgraph_test.sh ${INSTALL_DIR_BIN}
