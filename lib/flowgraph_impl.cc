@@ -500,13 +500,10 @@ struct ExtractorMaker : BlockMaker
   gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
   {
       assert(info.key == demux_ff_key);
-
-      auto samp_rate           = info.eval_param_value<float>("samp_rate", variables);
-      auto history             = info.eval_param_value<unsigned>("history", variables);
       auto pre_trigger_window  = info.eval_param_value<unsigned>("pre_trigger_window", variables);
       auto post_trigger_window = info.eval_param_value<unsigned>("post_trigger_window", variables);
 
-      auto block =  gr::digitizers::demux_ff::make(samp_rate, history, post_trigger_window, pre_trigger_window);
+      auto block =  gr::digitizers::demux_ff::make(post_trigger_window, pre_trigger_window);
 
       return block;
   }
