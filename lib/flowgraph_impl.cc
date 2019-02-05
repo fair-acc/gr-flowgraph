@@ -970,8 +970,9 @@ struct TimeRealignmentMaker : BlockMaker
 
         float user_delay = info.eval_param_value<float>("user_delay", variables);
         float triggerstamp_matching_tolerance = info.eval_param_value<float>("triggerstamp_matching_tolerance", variables);
+        float max_buffer_time = info.eval_param_value<float>("max_buffer_time", variables);
 
-        auto block =  gr::digitizers::time_realignment_ff::make(user_delay, triggerstamp_matching_tolerance);
+        auto block =  gr::digitizers::time_realignment_ff::make(user_delay, triggerstamp_matching_tolerance, max_buffer_time);
         return block;
     }
 };
