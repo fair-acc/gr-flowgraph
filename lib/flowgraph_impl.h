@@ -52,11 +52,10 @@
 #include <vector>
 #include <algorithm>
 #include <cctype>
+#include <sstream>
 
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/property_tree/ptree.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/algorithm/string.hpp>
 #include <boost/type_traits.hpp>
 #include <boost/range/algorithm/remove.hpp>
 #include <boost/algorithm/string/split.hpp>
@@ -69,19 +68,23 @@ namespace flowgraph {
     template <typename T = std::string>
     inline T convert_to(const std::string& string)
     {
-        return boost::lexical_cast<T>(string);
+        T retval;
+        std::stringstream ss;
+        ss << string;
+        ss >> retval;
+        return retval;
     }
 
     template <>
     inline bool convert_to(const std::string& string)
     {
-        if (boost::iequals(string, "False")) {
+        if (string == "False" || string == "false" || string == "FALSE" || string == "0" )
             return false;
-        } else if (boost::iequals(string, "True")) {
+        if (string == "True" || string == "true" || string == "TRUE" || string == "1" )
             return true;
-        }
-
-        return boost::lexical_cast<bool>(string);
+        std::ostringstream message;
+        message << "Exception in " << __FILE__ << ":" << __LINE__ << ": can't convert string '" << string << "' to boolean value.";
+        throw std::runtime_error(message.str());
     }
 
   }
