@@ -573,15 +573,15 @@ struct Ps3000aMaker : BlockMaker
         auto serial_number         = info.param_value("serial_number");
         auto trigger_once          = info.param_value<bool>("trigger_once");
         auto samp_rate             = info.eval_param_value<double>("samp_rate", variables);
-        auto samples               = info.eval_param_value<int>("samples", variables);
         auto pre_samples           = info.eval_param_value<int>("pre_samples", variables);
+        auto post_samples          = info.eval_param_value<int>("post_samples", variables);
         auto downsampling_mode     = info.param_value<int>("downsampling_mode");
         auto downsampling_factor   = info.eval_param_value<int>("downsampling_factor", variables);
 
         auto ps = gr::digitizers::picoscope_3000a::make(serial_number, true);
         ps->set_trigger_once(trigger_once);
         ps->set_samp_rate(samp_rate);
-        ps->set_samples(samples, pre_samples);
+        ps->set_samples(pre_samples, post_samples);
         ps->set_downsampling(
                 static_cast<gr::digitizers::downsampling_mode_t>(downsampling_mode),
                 downsampling_factor);
@@ -671,15 +671,15 @@ struct Ps4000aMaker : BlockMaker
         auto serial_number         = info.param_value("serial_number");
         auto trigger_once          = info.param_value<bool>("trigger_once");
         auto samp_rate             = info.eval_param_value<double>("samp_rate", variables);
-        auto samples               = info.eval_param_value<int>("samples", variables);
         auto pre_samples           = info.eval_param_value<int>("pre_samples", variables);
+        auto post_samples          = info.eval_param_value<int>("post_samples", variables);
         auto downsampling_mode     = info.param_value<int>("downsampling_mode");
         auto downsampling_factor   = info.eval_param_value<int>("downsampling_factor", variables);
 
         auto ps = gr::digitizers::picoscope_4000a::make(serial_number, true);
         ps->set_trigger_once(trigger_once);
         ps->set_samp_rate(samp_rate);
-        ps->set_samples(samples, pre_samples);
+        ps->set_samples(pre_samples, post_samples);
         ps->set_downsampling(
                 static_cast<gr::digitizers::downsampling_mode_t>(downsampling_mode),
                 downsampling_factor);
@@ -794,15 +794,15 @@ struct Ps6000Maker : BlockMaker
         auto serial_number         = info.param_value("serial_number");
         auto trigger_once          = info.param_value<bool>("trigger_once");
         auto samp_rate             = info.eval_param_value<double>("samp_rate", variables);
-        auto samples               = info.eval_param_value<int>("samples", variables);
         auto pre_samples           = info.eval_param_value<int>("pre_samples", variables);
+        auto post_samples          = info.eval_param_value<int>("post_samples", variables);
         auto downsampling_mode     = info.param_value<int>("downsampling_mode");
         auto downsampling_factor   = info.eval_param_value<int>("downsampling_factor", variables);
 
         auto ps = gr::digitizers::picoscope_6000::make(serial_number, true);
         ps->set_trigger_once(trigger_once);
         ps->set_samp_rate(samp_rate);
-        ps->set_samples(samples, pre_samples);
+        ps->set_samples(pre_samples, post_samples);
         ps->set_downsampling(
                 static_cast<gr::digitizers::downsampling_mode_t>(downsampling_mode),
                 downsampling_factor);
