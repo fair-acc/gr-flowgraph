@@ -417,9 +417,11 @@ struct CascadeSinkMaker : BlockMaker
         auto pm_buffer    = info.eval_param_value<float>("pm_buffer", variables);
         auto signal_name = info.param_value("signal_name");
         auto signal_unit = info.param_value("signal_unit");
+        int pre_samples = info.eval_param_value<int>("pre_trigger_window_raw", variables);
+        int post_samples = info.eval_param_value<int>("post_trigger_window_raw", variables);
 
         return gr::digitizers::cascade_sink::make(alg_id, delay, fir_taps, low_freq, up_freq, tr_width, fb_user_taps,
-            fw_user_taps, samp_rate, pm_buffer, signal_name, signal_unit);
+            fw_user_taps, samp_rate, pm_buffer, signal_name, signal_unit, pre_samples, post_samples);
 
     }
 };
