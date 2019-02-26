@@ -457,8 +457,9 @@ struct DecimateAndAdjustTimebaseMaker : BlockMaker
 
      auto decimation  = info.eval_param_value<int>("decimation", variables);
      auto delay       = info.eval_param_value<double>("delay", variables);
+     auto samp_rate   = info.eval_param_value<float>("samp_rate", variables);
 
-     auto block =  gr::digitizers::decimate_and_adjust_timebase::make(decimation, delay);
+     auto block =  gr::digitizers::decimate_and_adjust_timebase::make(decimation, delay, samp_rate);
 
      return block;
   }
@@ -913,8 +914,9 @@ struct SignalAveragerMaker : BlockMaker
 
      auto window_size    = info.eval_param_value<int>("window_size", variables);
      auto n_ports    = info.eval_param_value<int>("n_ports", variables);
+     auto samp_rate   = info.eval_param_value<float>("samp_rate", variables);
 
-     auto block =  gr::digitizers::signal_averager::make(n_ports, window_size);
+     auto block =  gr::digitizers::signal_averager::make(n_ports, window_size, samp_rate);
 
      return block;
   }
