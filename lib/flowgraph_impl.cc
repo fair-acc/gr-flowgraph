@@ -417,9 +417,14 @@ struct CascadeSinkMaker : BlockMaker
         auto pm_buffer    = info.eval_param_value<float>("pm_buffer", variables);
         auto signal_name = info.param_value("signal_name");
         auto signal_unit = info.param_value("signal_unit");
+        auto streaming_sinks_enabled = info.param_value<bool>("streaming_sinks_enabled");
+        auto triggered_sinks_enabled = info.param_value<bool>("triggered_sinks_enabled");
+        auto frequency_sinks_enabled = info.param_value<bool>("frequency_sinks_enabled");
+        auto postmortem_sinks_enabled = info.param_value<bool>("postmortem_sinks_enabled");
+        auto interlocks_enabled = info.param_value<bool>("interlocks_enabled");
 
         return gr::digitizers::cascade_sink::make(alg_id, delay, fir_taps, low_freq, up_freq, tr_width, fb_user_taps,
-            fw_user_taps, samp_rate, pm_buffer, signal_name, signal_unit);
+            fw_user_taps, samp_rate, pm_buffer, signal_name, signal_unit, streaming_sinks_enabled, triggered_sinks_enabled, frequency_sinks_enabled, postmortem_sinks_enabled, interlocks_enabled);
 
     }
 };

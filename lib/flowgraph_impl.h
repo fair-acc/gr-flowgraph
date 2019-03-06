@@ -123,9 +123,14 @@ struct BlockInfo
 	    try {
 	        return detail::convert_to<T>(param_value);
 	    }
+	    catch (std::exception ex) {
+            std::ostringstream message;
+            message << "Exception in " << __FILE__ << ":" << __LINE__ << ": failed to parse parameter '" << param_name << "' for block '" << id << "', string value: " << param_value << ". Error: " << ex.what();
+            throw std::runtime_error(message.str());
+	    }
 	    catch (...) {
             std::ostringstream message;
-            message << "Exception in " << __FILE__ << ":" << __LINE__ << ": failed to parse parameter " << param_name << " for block " << id << ", string value: " << param_value;
+            message << "Exception in " << __FILE__ << ":" << __LINE__ << ": failed to parse parameter '" << param_name << "' for block '" << id << "', string value: " << param_value;
             throw std::runtime_error(message.str());
         }
 	}
