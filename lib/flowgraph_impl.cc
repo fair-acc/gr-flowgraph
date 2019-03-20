@@ -27,6 +27,13 @@
 #include <gnuradio/blocks/tag_share.h>
 #include <gnuradio/blocks/tag_debug.h>
 #include <gnuradio/blocks/uchar_to_float.h>
+#include <gnuradio/filter/firdes.h>
+#include <gnuradio/filter/freq_xlating_fir_filter_ccc.h>
+#include <gnuradio/filter/freq_xlating_fir_filter_ccf.h>
+#include <gnuradio/filter/freq_xlating_fir_filter_fcc.h>
+#include <gnuradio/filter/freq_xlating_fir_filter_fcf.h>
+#include <gnuradio/filter/freq_xlating_fir_filter_scc.h>
+#include <gnuradio/filter/freq_xlating_fir_filter_scf.h>
 
 namespace flowgraph {
 
@@ -62,7 +69,7 @@ void GrcParser::parse()
 
     BOOST_FOREACH( boost::property_tree::ptree::value_type const& f, flow_graph) {
         if (f.first == "block" ) {
-            BlockInfo block;
+            BlockInfo block_info;
 
             // Obtain key and parameters
             boost::property_tree::ptree subtree = (boost::property_tree::ptree) f.second;
@@ -74,25 +81,30 @@ void GrcParser::parse()
 
                     if (key == "id")
                     {
-                        block.id = value;
+                        block_info.id = value;
                     } else {
-                        block.params[key] = value;
+                        block_info.params[key] = value;
                     }
                 } else if (v.first == "key") {
-                    block.key = v.second.get<std::string>("");
+                    block_info.key = v.second.get<std::string>("");
                 } else {
                     std::cout << "unknown block entry: " << v.first << ", skipping...\n";
                 }
             }
 
-            if (block.key == "options") {
-                d_top_block = block;
+            if (block_info.key == "options") {
+                d_top_block = block_info;
             }
-            else if (block.key == "variable") {
-                d_variables.push_back(block);
+            else if (block_info.key.find("variable") == 0) {  // any block which starts with "variable" .. this e.g. includes all taps
+                if (block_info.param_value<bool>("_enabled")) {
+                    d_variables.push_back(block_info);
+                }
+            }
+            else if( block_info.key == "note" ) {
+                // skip all "notes" (notes are comments in the *.grc file)
             }
             else {
-                d_blocks.push_back(block);
+                d_blocks.push_back(block_info);
             }
         } else if (f.first == "connection") {
             ConnectionInfo con;
@@ -116,15 +128,16 @@ void GrcParser::collapse_variables()
 {
     // For simplicity make a map
     std::map<std::string, std::string> variable_value_map;
-    for (const auto &v: d_variables) {
-        variable_value_map[v.id] = v.param_value("value");
+    for (const auto &variable: d_variables) {
+        if(variable.is_param_set("value"))
+            variable_value_map[variable.id] = variable.param_value("value");
     }
 
     // If orig. value is in the map, replace it with the associated value
-    for(auto& b: d_blocks) {
-        for (auto& p: b.params) {
-            if (variable_value_map.count(p.second)) {
-                p.second = variable_value_map[p.second];
+    for(auto& block: d_blocks) {
+        for (auto& parameter: block.params) {
+            if (variable_value_map.count(parameter.second)) {
+                parameter.second = variable_value_map[parameter.second];
             }
         }
     }
@@ -1007,6 +1020,119 @@ struct WrReceiverMaker : BlockMaker
     }
 };
 
+static std::vector<float> makeBandPassFilterFloat(const BlockInfo &info, const std::vector<BlockInfo> &variables)
+{
+    assert(info.key == band_pass_filter_taps_key);
+    std::string type             = info.param_value("type");
+    if( type != "taps_real" )
+    {
+        std::ostringstream message;
+        message << "Exception in " << __FILE__ << ":" << __LINE__ << ": Wrong Filter Type: '" << type << "' selected for filter: " << info.key << " .";
+        throw std::invalid_argument(message.str());
+    }
+    float gain             = info.eval_param_value<float>("gain", variables);
+    float samp_rate        = info.eval_param_value<float>("samp_rate", variables);
+    float low_cutoff_freq  = info.eval_param_value<float>("low_cutoff_freq", variables);
+    float high_cutoff_freq = info.eval_param_value<float>("high_cutoff_freq", variables);
+    float width            = info.eval_param_value<float>("width", variables);
+    int   win_type         = info.eval_param_enum("win");
+    float beta             = info.eval_param_value<float>("beta", variables);
+
+    return gr::filter::firdes::band_pass(gain, samp_rate, low_cutoff_freq, high_cutoff_freq, width,(gr::filter::firdes::win_type)win_type, beta);
+}
+
+static std::vector<gr_complex> makeBandPassFilterComplex(const BlockInfo &info, const std::vector<BlockInfo> &variables)
+{
+    assert(info.key == band_pass_filter_taps_key);
+    std::string type             = info.param_value("type");
+    if( type != "taps_complex" )
+    {
+        std::ostringstream message;
+        message << "Exception in " << __FILE__ << ":" << __LINE__ << ": Wrong Filter Type: '" << type << "' selected for filter: " << info.key << " .";
+        throw std::invalid_argument(message.str());
+    }
+    float gain             = info.eval_param_value<float>("gain", variables);
+    float samp_rate        = info.eval_param_value<float>("samp_rate", variables);
+    float low_cutoff_freq  = info.eval_param_value<float>("low_cutoff_freq", variables);
+    float high_cutoff_freq = info.eval_param_value<float>("high_cutoff_freq", variables);
+    float width            = info.eval_param_value<float>("width", variables);
+    int   win_type         = info.eval_param_enum("win");
+    float beta             = info.eval_param_value<float>("beta", variables);
+
+    return gr::filter::firdes::complex_band_pass(gain, samp_rate, low_cutoff_freq, high_cutoff_freq, width,(gr::filter::firdes::win_type)win_type, beta);
+}
+
+static std::vector<float> makeFloatFilter(const BlockInfo &info, const std::vector<BlockInfo> &variables)
+{
+    if( info.key == band_pass_filter_taps_key )
+        return makeBandPassFilterFloat(info, variables);
+
+    std::ostringstream message;
+    message << "Exception in " << __FILE__ << ":" << __LINE__ << ": So far the type: " << info.key << " is not supported.";
+    throw std::invalid_argument(message.str());
+}
+
+static std::vector<gr_complex> makeComplexFilter(const BlockInfo &info, const std::vector<BlockInfo> &variables)
+{
+    if( info.key == band_pass_filter_taps_key )
+        return makeBandPassFilterComplex(info, variables);
+
+    std::ostringstream message;
+    message << "Exception in " << __FILE__ << ":" << __LINE__ << ": So far the type: " << info.key << " is not supported.";
+    throw std::invalid_argument(message.str());
+}
+
+struct FreqXlatingFirFilterMaker : BlockMaker
+{
+    gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
+    {
+        assert(info.key == freq_xlating_fir_filter_xxx_key);
+
+        int decim            = info.eval_param_value<int>("decim", variables);
+        std::string filter_type_string     = info.param_value("type");
+        std::string taps_name       = info.param_value("taps");
+        double center_freq   = info.eval_param_value<double>("center_freq", variables);
+        double sampling_freq = info.eval_param_value<double>("samp_rate", variables);
+
+        BlockInfo tap;
+        bool found = false;
+        for( BlockInfo variable : variables )
+        {
+            if(variable.id == taps_name)
+            {
+                tap = variable;
+                found = true;
+            }
+        }
+
+        if(!found)
+        {
+            std::ostringstream message;
+            message << "Exception in " << __FILE__ << ":" << __LINE__ << ": Filter TAP named '" << taps_name<< "' not found.";
+            throw std::invalid_argument(message.str());
+        }
+
+        if     (filter_type_string == "ccc")
+            return gr::filter::freq_xlating_fir_filter_ccc::make(decim, makeComplexFilter(tap, variables), center_freq, sampling_freq);
+        else if(filter_type_string == "ccf")
+            return gr::filter::freq_xlating_fir_filter_ccf::make(decim, makeFloatFilter(tap, variables), center_freq, sampling_freq);
+        else if(filter_type_string == "fcc")
+            return gr::filter::freq_xlating_fir_filter_fcc::make(decim, makeComplexFilter(tap, variables), center_freq, sampling_freq);
+        else if(filter_type_string == "fcf")
+            return gr::filter::freq_xlating_fir_filter_fcf::make(decim, makeFloatFilter(tap, variables), center_freq, sampling_freq);
+        else if(filter_type_string == "scc")
+            return gr::filter::freq_xlating_fir_filter_scc::make(decim, makeComplexFilter(tap, variables), center_freq, sampling_freq);
+        else if(filter_type_string == "scf")
+            return gr::filter::freq_xlating_fir_filter_scf::make(decim, makeFloatFilter(tap, variables), center_freq, sampling_freq);
+        else
+        {
+            std::ostringstream message;
+            message << "Exception in " << __FILE__ << ":" << __LINE__ << ": unknown FreqXlatingFirFilter type: " << filter_type_string;
+            throw std::invalid_argument(message.str());
+        }
+    }
+};
+
 
 BlockFactory::BlockFactory()
 {
@@ -1046,6 +1172,7 @@ BlockFactory::BlockFactory()
   handlers_b[time_domain_sink_key] = boost::shared_ptr<BlockMaker>(new TimeDomainSinkMaker());
   handlers_b[time_realignment_key] = boost::shared_ptr<BlockMaker>(new TimeRealignmentMaker());
   handlers_b[wr_receiver_f_key] = boost::shared_ptr<BlockMaker>(new WrReceiverMaker());
+  handlers_b[freq_xlating_fir_filter_xxx_key] = boost::shared_ptr<BlockMaker>(new FreqXlatingFirFilterMaker());
 }
 
 
@@ -1137,9 +1264,6 @@ std::unique_ptr<FlowGraph> make_flowgraph(std::istream &input, const std::map<st
 	std::vector<std::string> disabled_blocks;
  	for (auto info : parser.blocks())
  	{
- 	    if ( info.key == "note" ) {
-            continue; // skip all "notes" (notes are comments in the *.grc file)
- 	    }
  	    if (!info.param_value<bool>("_enabled")) {
  	        disabled_blocks.push_back(info.id);
  	        continue;

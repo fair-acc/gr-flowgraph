@@ -106,7 +106,7 @@ struct BlockInfo
         auto param = params.find(param_name);
         if (param == params.end()) {
             std::ostringstream message;
-            message << "Exception in " << __FILE__ << ":" << __LINE__ << ": can't find parameter " << param_name << " for block " << id;
+            message << "Exception in " << __FILE__ << ":" << __LINE__ << ": can't find parameter '" << param_name << "' for block " << id;
             throw std::runtime_error(message.str());
         }
 
@@ -155,12 +155,12 @@ struct BlockInfo
     {
 	    std::map<std::string, double> variable_map;
 
-	    for (auto &var : variables) {
-	        variable_map[var.id] = var.param_value<T>("value");
+	    for (auto &var : variables)
+	    {
+	        if(var.is_param_set("value"))
+	            variable_map[var.id] = var.param_value<T>("value");
 	    }
-
 	    auto expression = param_value(param_name);
-
         try {
           return static_cast<T>(detail::evaluate_expression(expression, variable_map));
         }
@@ -178,8 +178,10 @@ struct BlockInfo
 
 	    std::map<std::string, double> variable_map;
 
-        for (auto &var : variables) {
-            variable_map[var.id] = var.param_value<double>("value");
+        for (auto &var : variables)
+        {
+            if(var.is_param_set("value"))
+                variable_map[var.id] = var.param_value<double>("value");
         }
 
         auto expression = param_value(param_name);
@@ -237,6 +239,11 @@ struct BlockInfo
         {"WIN_FLATTOP", gr::filter::firdes::win_type::WIN_FLATTOP}};
         return enum_map[enum_spec];
     }
+
+    std::ostringstream message;
+    message << "Exception in " << __FILE__ << ":" << __LINE__ << ": failed to evaluate enum parameter for: " << param_name << " for block " << id << ", expression: " << expression;
+    throw std::runtime_error(message.str());
+
     //other enums can be added here
     return -1;
   }

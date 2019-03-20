@@ -61,7 +61,7 @@ static const std::string chi_square_fit_key               = "digitizers_chi_squa
 static const std::string decimate_and_adjust_timebase_key = "digitizers_decimate_and_adjust_timebase";
 static const std::string edge_trigger_ff_key              = "digitizers_edge_trigger_ff";
 static const std::string edge_trigger_receiver_f_key      = "digitizers_edge_trigger_receiver_f";
-static const std::string demux_ff_key                    = "digitizers_demux_ff";
+static const std::string demux_ff_key                     = "digitizers_demux_ff";
 static const std::string freq_sink_f_key                  = "digitizers_freq_sink_f";
 static const std::string function_ff_key                  = "digitizers_function_ff";
 static const std::string interlock_generation_ff_key      = "digitizers_interlock_generation_ff";
@@ -75,6 +75,8 @@ static const std::string stft_goertzl_dynamic_key         = "digitizers_stft_goe
 static const std::string time_domain_sink_key             = "digitizers_time_domain_sink";
 static const std::string time_realignment_key             = "digitizers_time_realignment_ff";
 static const std::string wr_receiver_f_key                = "digitizers_wr_receiver_f";
+static const std::string band_pass_filter_taps_key        = "variable_band_pass_filter_taps";
+static const std::string freq_xlating_fir_filter_xxx_key  = "freq_xlating_fir_filter_xxx";
 
 static const std::vector<std::string> supported_block_types =
 {
