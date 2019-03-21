@@ -27,6 +27,8 @@
 #include <gnuradio/blocks/tag_share.h>
 #include <gnuradio/blocks/tag_debug.h>
 #include <gnuradio/blocks/uchar_to_float.h>
+#include <gnuradio/blocks/complex_to_float.h>
+#include <gnuradio/blocks/float_to_complex.h>
 #include <gnuradio/filter/firdes.h>
 #include <gnuradio/filter/freq_xlating_fir_filter_ccc.h>
 #include <gnuradio/filter/freq_xlating_fir_filter_ccf.h>
@@ -169,7 +171,7 @@ struct NullSinkMaker : BlockMaker
 {
     gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
     {
-        assert(info.key == "blocks_null_sink");
+        assert(info.key == blocks_null_sink_key);
 
         auto type = info.param_value<>("type");
         auto vlen = info.eval_param_value<int>("vlen", variables);
@@ -181,7 +183,7 @@ struct NullSourceMaker : BlockMaker
 {
     gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
     {
-        assert(info.key == "blocks_null_source");
+        assert(info.key == blocks_null_source_key);
 
         auto type = info.param_value<>("type");
         auto vlen = info.eval_param_value<int>("vlen", variables);
@@ -193,7 +195,7 @@ struct UcharToFloatMaker : BlockMaker
 {
     gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
     {
-        assert(info.key == "blocks_uchar_to_float");
+        assert(info.key == blocks_uchar_to_float_key);
         return gr::blocks::uchar_to_float::make();
     }
 };
@@ -202,7 +204,7 @@ struct VectorToStreamMaker : BlockMaker
 {
     gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
     {
-        assert(info.key == "blocks_vector_to_stream");
+        assert(info.key == blocks_vector_to_stream_key);
 
         auto type = info.param_value<>("type");
         auto num_items = info.eval_param_value<int>("num_items", variables);
@@ -215,7 +217,7 @@ struct VectorToStreamsMaker : BlockMaker
 {
     gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
     {
-        assert(info.key == "blocks_vector_to_streams");
+        assert(info.key == blocks_vector_to_streams_key);
 
         auto type = info.param_value<>("type");
         auto num_streams = info.eval_param_value<int>("num_streams", variables);
@@ -228,12 +230,32 @@ struct StreamToVectorMaker : BlockMaker
 {
     gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
     {
-        assert(info.key == "blocks_stream_to_vector");
+        assert(info.key == blocks_stream_to_vector_key);
 
         auto type = info.param_value<>("type");
         auto num_items = info.eval_param_value<int>("num_items", variables);
         auto vlen      = info.eval_param_value<int>("vlen", variables);
         return gr::blocks::stream_to_vector::make(vlen * getSizeOfType(type), num_items);
+    }
+};
+
+struct ComplexToFloatMaker : BlockMaker
+{
+    gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
+    {
+        assert(info.key == blocks_complex_to_float_key);
+        int vlen      = info.eval_param_value<int>("vlen", variables);
+        return gr::blocks::complex_to_float::make(vlen);
+    }
+};
+
+struct FloatToComplexMaker : BlockMaker
+{
+    gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
+    {
+        assert(info.key == blocks_float_to_complex_key);
+        int vlen      = info.eval_param_value<int>("vlen", variables);
+        return gr::blocks::float_to_complex::make(vlen);
     }
 };
 
@@ -256,7 +278,7 @@ struct SigSourceMaker : BlockMaker
 
 	gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
 	{
-		assert(info.key == "analog_sig_source_x");
+		assert(info.key == analog_sig_source_x_key);
 		auto sampling_freq = info.eval_param_value<double>("samp_rate", variables);
 		auto wave_freq     = info.eval_param_value<double>("freq", variables);
 		auto ampl          = info.eval_param_value<double>("amp", variables);
@@ -1136,16 +1158,18 @@ struct FreqXlatingFirFilterMaker : BlockMaker
 
 BlockFactory::BlockFactory()
 {
-  handlers_b["blocks_null_sink"] = boost::shared_ptr<BlockMaker>(new NullSinkMaker());
-  handlers_b["blocks_null_source"] = boost::shared_ptr<BlockMaker>(new NullSourceMaker());
-  handlers_b["blocks_uchar_to_float"] = boost::shared_ptr<BlockMaker>(new UcharToFloatMaker());
-  handlers_b["blocks_vector_to_stream"] = boost::shared_ptr<BlockMaker>(new VectorToStreamMaker());
-  handlers_b["blocks_stream_to_vector"] = boost::shared_ptr<BlockMaker>(new StreamToVectorMaker());
-  handlers_b["blocks_vector_to_streams"] = boost::shared_ptr<BlockMaker>(new VectorToStreamsMaker());
-  handlers_b["analog_sig_source_x"] = boost::shared_ptr<BlockMaker>(new SigSourceMaker());
+  handlers_b[blocks_null_sink_key] = boost::shared_ptr<BlockMaker>(new NullSinkMaker());
+  handlers_b[blocks_null_source_key] = boost::shared_ptr<BlockMaker>(new NullSourceMaker());
+  handlers_b[blocks_uchar_to_float_key] = boost::shared_ptr<BlockMaker>(new UcharToFloatMaker());
+  handlers_b[blocks_vector_to_stream_key] = boost::shared_ptr<BlockMaker>(new VectorToStreamMaker());
+  handlers_b[blocks_stream_to_vector_key] = boost::shared_ptr<BlockMaker>(new StreamToVectorMaker());
+  handlers_b[blocks_vector_to_streams_key] = boost::shared_ptr<BlockMaker>(new VectorToStreamsMaker());
+  handlers_b[analog_sig_source_x_key] = boost::shared_ptr<BlockMaker>(new SigSourceMaker());
   handlers_b[blocks_throttle_key] = boost::shared_ptr<BlockMaker>(new ThrottleMaker());
   handlers_b[blocks_tag_share_key] = boost::shared_ptr<BlockMaker>(new TagShareMaker());
   handlers_b[blocks_tag_debug_key] = boost::shared_ptr<BlockMaker>(new TagDebugMaker());
+  handlers_b[blocks_complex_to_float_key] = boost::shared_ptr<BlockMaker>(new ComplexToFloatMaker());
+  handlers_b[blocks_float_to_complex_key] = boost::shared_ptr<BlockMaker>(new FloatToComplexMaker());
 
   handlers_b[block_aggregation_key] = boost::shared_ptr<BlockMaker>(new AggregationMaker());
   handlers_b[block_amplitude_and_phase_key] = boost::shared_ptr<BlockMaker>(new AmplitudeAndPhaseMaker());

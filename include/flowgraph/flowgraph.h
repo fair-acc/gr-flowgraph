@@ -47,9 +47,23 @@
 
 namespace flowgraph {
 
+/* gnuradio itself */
 static const std::string blocks_throttle_key              = "blocks_throttle";
 static const std::string blocks_tag_share_key             = "blocks_tag_share";
 static const std::string blocks_tag_debug_key             = "blocks_tag_debug";
+static const std::string blocks_complex_to_float_key      = "blocks_complex_to_float";
+static const std::string blocks_float_to_complex_key      = "blocks_float_to_complex";
+static const std::string blocks_null_sink_key             = "blocks_null_sink";
+static const std::string blocks_null_source_key           = "blocks_null_source";
+static const std::string blocks_uchar_to_float_key        = "blocks_uchar_to_float";
+static const std::string blocks_vector_to_stream_key      = "blocks_vector_to_stream";
+static const std::string blocks_stream_to_vector_key      = "blocks_stream_to_vector";
+static const std::string blocks_vector_to_streams_key     = "blocks_vector_to_streams";
+static const std::string analog_sig_source_x_key          = "analog_sig_source_x";
+static const std::string freq_xlating_fir_filter_xxx_key  = "freq_xlating_fir_filter_xxx";
+static const std::string band_pass_filter_taps_key        = "variable_band_pass_filter_taps";
+
+/* Digitizer */
 static const std::string block_aggregation_key            = "digitizers_block_aggregation";
 static const std::string block_amplitude_and_phase_key    = "digitizers_block_amplitude_and_phase";
 static const std::string block_complex_to_mag_deg_key     = "digitizers_block_complex_to_mag_deg";
@@ -75,41 +89,6 @@ static const std::string stft_goertzl_dynamic_key         = "digitizers_stft_goe
 static const std::string time_domain_sink_key             = "digitizers_time_domain_sink";
 static const std::string time_realignment_key             = "digitizers_time_realignment_ff";
 static const std::string wr_receiver_f_key                = "digitizers_wr_receiver_f";
-static const std::string band_pass_filter_taps_key        = "variable_band_pass_filter_taps";
-static const std::string freq_xlating_fir_filter_xxx_key  = "freq_xlating_fir_filter_xxx";
-
-static const std::vector<std::string> supported_block_types =
-{
-    {"variable"},
-    {"analog_sig_source_x"},
-    {"blocks_null_sink"},
-	blocks_throttle_key,
-	blocks_tag_share_key,
-    block_aggregation_key,
-    block_amplitude_and_phase_key,
-    block_demux_key,
-    block_scaling_offset_key,
-    block_spectral_peaks_key,
-    chi_square_fit_key,
-    decimate_and_adjust_timebase_key,
-    edge_trigger_ff_key,
-    demux_ff_key,
-    freq_sink_f_key,
-    function_ff_key,
-    interlock_generation_ff_key,
-    picoscope_3000a_key,
-    picoscope_4000a_key,
-    picoscope_6000_key,
-    post_mortem_sink_key,
-    signal_averager_key,
-    stft_algorithms_key,
-    stft_goertzl_dynamic_key,
-    time_domain_sink_key,
-    time_realignment_key,
-    cascade_sink_key,
-    edge_trigger_receiver_f_key,
-    wr_receiver_f_key
-};
 
 static const std::vector<std::string> digitizer_keys =
 {
