@@ -1010,10 +1010,12 @@ struct TimeDomainSinkMaker : BlockMaker
         auto signal_unit  = info.param_value("signal_unit");
         auto samp_rate    = info.eval_param_value<double>("samp_rate", variables);
         auto output_package_size  = info.eval_param_value<size_t>("output_package_size", variables);
+        auto pre_samples  = info.eval_param_value<int>("pre_samples", variables);
+        auto post_samples  = info.eval_param_value<int>("post_samples", variables);
         auto mode         = info.param_value<int>("acquisition_type");
 
         auto sink =  gr::digitizers::time_domain_sink::make(signal_name, signal_unit, samp_rate, (size_t)output_package_size, static_cast<gr::digitizers::time_sink_mode_t>(mode));
-
+        sink->set_samples(pre_samples, post_samples);
         return sink;
     }
 };
