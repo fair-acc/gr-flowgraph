@@ -457,9 +457,27 @@ struct CascadeSinkMaker : BlockMaker
         auto frequency_sinks_enabled = info.param_value<bool>("frequency_sinks_enabled");
         auto postmortem_sinks_enabled = info.param_value<bool>("postmortem_sinks_enabled");
         auto interlocks_enabled = info.param_value<bool>("interlocks_enabled");
+        int pre_samples = info.eval_param_value<int>("pre_trigger_samples_raw", variables);
+        int post_samples = info.eval_param_value<int>("post_trigger_samples_raw", variables);
 
-        return gr::digitizers::cascade_sink::make(alg_id, delay, fir_taps, low_freq, up_freq, tr_width, fb_user_taps,
-            fw_user_taps, samp_rate, pm_buffer, signal_name, signal_unit, streaming_sinks_enabled, triggered_sinks_enabled, frequency_sinks_enabled, postmortem_sinks_enabled, interlocks_enabled);
+        return gr::digitizers::cascade_sink::make(alg_id,delay,
+                                                  fir_taps,
+                                                  low_freq,
+                                                  up_freq,
+                                                  tr_width,
+                                                  fb_user_taps,
+                                                  fw_user_taps,
+                                                  samp_rate,
+                                                  pm_buffer,
+                                                  signal_name,
+                                                  signal_unit,
+                                                  streaming_sinks_enabled,
+                                                  triggered_sinks_enabled,
+                                                  frequency_sinks_enabled,
+                                                  postmortem_sinks_enabled,
+                                                  interlocks_enabled,
+                                                  pre_samples,
+                                                  post_samples);
 
     }
 };
@@ -1014,9 +1032,10 @@ struct TimeDomainSinkMaker : BlockMaker
         auto post_samples  = info.eval_param_value<int>("post_samples", variables);
         auto mode         = info.param_value<int>("acquisition_type");
 
-        auto sink =  gr::digitizers::time_domain_sink::make(signal_name, signal_unit, samp_rate, (size_t)output_package_size, static_cast<gr::digitizers::time_sink_mode_t>(mode));
-        sink->set_samples(pre_samples, post_samples);
-        return sink;
+        if( mode == gr::digitizers::time_sink_mode_t::TIME_SINK_MODE_TRIGGERED)
+            return gr::digitizers::time_domain_sink::make(signal_name, signal_unit, samp_rate, static_cast<gr::digitizers::time_sink_mode_t>(mode), pre_samples, post_samples);
+        else
+            return gr::digitizers::time_domain_sink::make(signal_name, signal_unit, samp_rate, static_cast<gr::digitizers::time_sink_mode_t>(mode), (size_t)output_package_size);
     }
 };
 
