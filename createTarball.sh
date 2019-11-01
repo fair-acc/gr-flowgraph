@@ -25,17 +25,9 @@ TARBALL_NAME=Flowgraph-${VERSION}.tar
 mkdir -p ${INSTALL_DIR_LIB}
 mkdir -p ${INSTALL_DIR_BIN}
 
-if [ $VERSION = "master" ]
-    then
-        cp ${SCRIPTPATH}/build/lib/libgnuradio-flowgraph-*.master.so.0.0.0 ${INSTALL_DIR_LIB}
-    else
-        cp ${SCRIPTPATH}/build/lib/libgnuradio-flowgraph-${VERSION}.master.so.0.0.0 ${INSTALL_DIR_LIB}
-fi
-    
-
-
-cp ${SCRIPTPATH}/build/lib/test-flowgraph ${INSTALL_DIR_BIN}
-cp ${SCRIPTPATH}/build/lib/test_flowgraph_test.sh ${INSTALL_DIR_BIN}
+cp /common/usr/cscofe/opt/gr-flowgraph/${VERSION}/lib64/libgnuradio-flowgraph-*.so.0.0.0 ${INSTALL_DIR_LIB}
+#cp ${SCRIPTPATH}/build/lib/test-flowgraph ${INSTALL_DIR_BIN}    ## needed for what ?
+#cp ${SCRIPTPATH}/build/lib/test_flowgraph_test.sh ${INSTALL_DIR_BIN}
 
 tar cfv ${TARBALL_NAME} ${FOLDER_TO_TAR}
 rm -rf ${FOLDER_TO_TAR}
