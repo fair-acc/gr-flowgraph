@@ -377,6 +377,22 @@ struct AmplitudeAndPhaseMaker : BlockMaker
   }
 };
 
+struct FrequencyEstimatorMaker : BlockMaker
+{
+  gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
+  {
+     assert(info.key == freq_estimator_key);
+     auto samp_rate    = info.eval_param_value<double>("samp_rate", variables);
+     auto sig_window_size    = info.eval_param_value<int>("sig_window_size", variables);
+     auto freq_window_size    = info.eval_param_value<int>("freq_window_size", variables);
+     auto decim    = info.eval_param_value<int>("decim", variables);
+
+     auto block =  gr::digitizers::freq_estimator::make(samp_rate, sig_window_size, freq_window_size, decim);
+
+     return block;
+  }
+};
+
 struct ComplexToMagDegMaker : BlockMaker
 {
     gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
@@ -1198,6 +1214,7 @@ BlockFactory::BlockFactory()
   handlers_b[block_demux_key] = boost::shared_ptr<BlockMaker>(new DemuxMaker());
   handlers_b[block_scaling_offset_key] = boost::shared_ptr<BlockMaker>(new ScalingOffsetMaker());
   handlers_b[block_spectral_peaks_key] = boost::shared_ptr<BlockMaker>(new SpectralPeaksMaker());
+  handlers_b[freq_estimator_key] = boost::shared_ptr<BlockMaker>(new FrequencyEstimatorMaker());
   handlers_b[cascade_sink_key] = boost::shared_ptr<BlockMaker>(new CascadeSinkMaker());
   handlers_b[chi_square_fit_key] = boost::shared_ptr<BlockMaker>(new ChiSquareFitMaker());
   handlers_b[decimate_and_adjust_timebase_key] = boost::shared_ptr<BlockMaker>(new DecimateAndAdjustTimebaseMaker());

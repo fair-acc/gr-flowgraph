@@ -38,6 +38,7 @@
 #include <digitizers/stft_goertzl_dynamic_decimated.h>
 #include <digitizers/time_domain_sink.h>
 #include <digitizers/time_realignment_ff.h>
+#include <digitizers/freq_estimator.h>
 #include <digitizers/cascade_sink.h>
 #include <digitizers/edge_trigger_receiver_f.h>
 #include <digitizers/wr_receiver_f.h>
@@ -70,6 +71,7 @@ static const std::string block_complex_to_mag_deg_key     = "digitizers_block_co
 static const std::string block_demux_key                  = "digitizers_block_demux";
 static const std::string block_scaling_offset_key         = "digitizers_block_scaling_offset";
 static const std::string block_spectral_peaks_key         = "digitizers_block_spectral_peaks";
+static const std::string freq_estimator_key               = "digitizers_freq_estimator";
 static const std::string cascade_sink_key                 = "digitizers_cascade_sink";
 static const std::string chi_square_fit_key               = "digitizers_chi_square_fit";
 static const std::string decimate_and_adjust_timebase_key = "digitizers_decimate_and_adjust_timebase";
