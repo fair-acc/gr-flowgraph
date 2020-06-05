@@ -29,6 +29,8 @@
 #include <gnuradio/blocks/uchar_to_float.h>
 #include <gnuradio/blocks/complex_to_float.h>
 #include <gnuradio/blocks/float_to_complex.h>
+#include <gnuradio/blocks/complex_to_mag.h>
+#include <gnuradio/blocks/complex_to_magphase.h>
 #include <gnuradio/filter/firdes.h>
 #include <gnuradio/filter/freq_xlating_fir_filter_ccc.h>
 #include <gnuradio/filter/freq_xlating_fir_filter_ccf.h>
@@ -223,6 +225,26 @@ struct VectorToStreamsMaker : BlockMaker
         auto num_streams = info.eval_param_value<int>("num_streams", variables);
         auto vlen        = info.eval_param_value<int>("vlen", variables);
         return gr::blocks::vector_to_streams::make(vlen * getSizeOfType(type), num_streams);
+    }
+};
+
+struct ComplexToMagMaker : BlockMaker
+{
+    gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
+    {
+        assert(info.key == blocks_complex_to_mag_key);
+        int vlen = info.eval_param_value<int>("vlen", variables);
+        return gr::blocks::complex_to_mag::make(vlen);
+    }
+};
+
+struct ComplexToMagPhaseMaker : BlockMaker
+{
+    gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
+    {
+        assert(info.key == blocks_complex_to_magphase_key);
+        int vlen = info.eval_param_value<int>("vlen", variables);
+        return gr::blocks::complex_to_magphase::make(vlen);
     }
 };
 
@@ -1201,6 +1223,8 @@ BlockFactory::BlockFactory()
   handlers_b[blocks_vector_to_stream_key] = boost::shared_ptr<BlockMaker>(new VectorToStreamMaker());
   handlers_b[blocks_stream_to_vector_key] = boost::shared_ptr<BlockMaker>(new StreamToVectorMaker());
   handlers_b[blocks_vector_to_streams_key] = boost::shared_ptr<BlockMaker>(new VectorToStreamsMaker());
+  handlers_b[blocks_complex_to_mag_key] = boost::shared_ptr<BlockMaker>(new ComplexToMagMaker());
+  handlers_b[blocks_complex_to_magphase_key] = boost::shared_ptr<BlockMaker>(new ComplexToMagPhaseMaker());
   handlers_b[analog_sig_source_x_key] = boost::shared_ptr<BlockMaker>(new SigSourceMaker());
   handlers_b[blocks_throttle_key] = boost::shared_ptr<BlockMaker>(new ThrottleMaker());
   handlers_b[blocks_tag_share_key] = boost::shared_ptr<BlockMaker>(new TagShareMaker());

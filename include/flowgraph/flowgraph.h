@@ -60,9 +60,12 @@ static const std::string blocks_uchar_to_float_key        = "blocks_uchar_to_flo
 static const std::string blocks_vector_to_stream_key      = "blocks_vector_to_stream";
 static const std::string blocks_stream_to_vector_key      = "blocks_stream_to_vector";
 static const std::string blocks_vector_to_streams_key     = "blocks_vector_to_streams";
+static const std::string blocks_complex_to_mag_key        = "blocks_complex_to_mag";
+static const std::string blocks_complex_to_magphase_key   = "blocks_complex_to_magphase";
 static const std::string analog_sig_source_x_key          = "analog_sig_source_x";
 static const std::string freq_xlating_fir_filter_xxx_key  = "freq_xlating_fir_filter_xxx";
 static const std::string band_pass_filter_taps_key        = "variable_band_pass_filter_taps";
+
 
 /* Digitizer */
 static const std::string block_aggregation_key            = "digitizers_block_aggregation";
