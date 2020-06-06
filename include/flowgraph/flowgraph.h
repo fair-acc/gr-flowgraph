@@ -42,6 +42,7 @@
 #include <digitizers/cascade_sink.h>
 #include <digitizers/edge_trigger_receiver_f.h>
 #include <digitizers/wr_receiver_f.h>
+#include <digitizers/amplitude_phase_adjuster.h>
 
 #include <flowgraph/api.h>
 
@@ -94,6 +95,7 @@ static const std::string stft_goertzl_dynamic_key         = "digitizers_stft_goe
 static const std::string time_domain_sink_key             = "digitizers_time_domain_sink";
 static const std::string time_realignment_key             = "digitizers_time_realignment_ff";
 static const std::string wr_receiver_f_key                = "digitizers_wr_receiver_f";
+static const std::string amplitude_phase_adjuster_key     = "digitizers_amplitude_phase_adjuster";
 
 static const std::vector<std::string> digitizer_keys =
 {

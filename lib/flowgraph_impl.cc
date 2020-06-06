@@ -1101,6 +1101,19 @@ struct WrReceiverMaker : BlockMaker
     }
 };
 
+struct AmplitudePhaseAdjusterMaker : BlockMaker
+{
+    gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
+            {
+                assert(info.key == amplitude_phase_adjuster_key);
+
+                float ampl_cal = info.eval_param_value<float>("ampl_cal", variables);
+                float phi_usr = info.eval_param_value<float>("phi_usr", variables);
+                float phi_fq_usr = info.eval_param_value<float>("phi_fq_usr", variables);
+                return gr::digitizers::amplitude_phase_adjuster::make(ampl_cal, phi_usr, phi_fq_usr);
+            }
+};
+
 static std::vector<float> makeBandPassFilterFloat(const BlockInfo &info, const std::vector<BlockInfo> &variables)
 {
     assert(info.key == band_pass_filter_taps_key);
@@ -1258,6 +1271,7 @@ BlockFactory::BlockFactory()
   handlers_b[time_domain_sink_key] = boost::shared_ptr<BlockMaker>(new TimeDomainSinkMaker());
   handlers_b[time_realignment_key] = boost::shared_ptr<BlockMaker>(new TimeRealignmentMaker());
   handlers_b[wr_receiver_f_key] = boost::shared_ptr<BlockMaker>(new WrReceiverMaker());
+  handlers_b[amplitude_phase_adjuster_key] = boost::shared_ptr<BlockMaker>(new AmplitudePhaseAdjusterMaker());
   handlers_b[freq_xlating_fir_filter_xxx_key] = boost::shared_ptr<BlockMaker>(new FreqXlatingFirFilterMaker());
 }
 
