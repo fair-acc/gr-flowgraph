@@ -72,7 +72,22 @@ namespace flowgraph {
         std::stringstream ss;
         ss << string;
         ss >> retval;
+
+        if (!ss.eof()) // failed to convert the whole string .. possibly whitespaces in the string ?
+        {
+            std::ostringstream message;
+            message << "Exception in " << __FILE__ << ":" << __LINE__ << ": can't convert string '" << string << "' to value.";
+            throw std::runtime_error(message.str());
+        }
+
         return retval;
+    }
+
+    // Specific template for strings, otherwise stringstream will only cut till whitespaces
+    template <>
+    inline std::string convert_to(const std::string& string)
+    {
+        return string;
     }
 
     template <>
