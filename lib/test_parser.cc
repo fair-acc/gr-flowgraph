@@ -27,7 +27,7 @@ void qa_parser::testGetVersion()
 
 void qa_parser::testOptions()
 {
-  std::ifstream input("test_parser_options.grc");
+  std::ifstream input("lib/test_parser_options.grc");
 
   GrcParser parser(input);
   parser.parse();
@@ -40,7 +40,7 @@ void qa_parser::testOptions()
 
 void qa_parser::testCollapseVariables()
 {
-  std::ifstream input("test_collapse_variables.grc");
+  std::ifstream input("lib/test_collapse_variables.grc");
 
   GrcParser parser(input);
   parser.parse();
@@ -95,7 +95,7 @@ void qa_parser::testExprtk()
 
 void qa_parser::testEvaluateExpressions()
 {
-  std::ifstream input("test_expressions.grc");
+  std::ifstream input("lib/test_expressions.grc");
 
   GrcParser parser(input);
   parser.parse();
