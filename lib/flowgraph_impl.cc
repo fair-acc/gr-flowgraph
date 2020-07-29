@@ -1341,7 +1341,7 @@ gr::basic_block_sptr BlockFactory::make_block(const BlockInfo &info, const std::
     return block;
 }
 
-std::unique_ptr<FlowGraph> make_flowgraph(std::istream &input, const std::map<std::string, std::string> &hw_mapping)
+std::unique_ptr<FlowGraph> make_flowgraph(std::istream &input)
 {
 	// parse input and replace variables
 	flowgraph::GrcParser parser(input);
@@ -1369,9 +1369,6 @@ std::unique_ptr<FlowGraph> make_flowgraph(std::istream &input, const std::map<st
  	        continue;
  	    }
 
- 		if (hw_mapping.count(info.id)) {
- 			info.params["serial_number"] = hw_mapping.find(info.id)->second;
- 		}
 		auto block = factory.make_block(info, variables);
 		graph->add(block, info.id, info.key);
 	}

@@ -415,12 +415,7 @@ private:
 /*!
  * \brief Creates a flowgraph based on input stream.
  *
- * Optionally, hardware addresses can be mapped to something else if needed,
- * meaning the value of 'serial_number' property is replaced by the user
- * defined value.
- *
  * \param input
- * \param hw_mapping
  *
  * Example:
  * \code
@@ -429,8 +424,7 @@ private:
  * \endcode
  * \returns flowgraph (unique pointer)
  */
-std::unique_ptr<FlowGraph> FLOWGRAPH_API make_flowgraph(std::istream &input,
-		const std::map<std::string, std::string> &hw_mapping = {});
+std::unique_ptr<FlowGraph> FLOWGRAPH_API make_flowgraph(std::istream &input);
 
 }
 
