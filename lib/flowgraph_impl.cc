@@ -875,7 +875,7 @@ struct Ps4000aMaker : BlockMaker
             ps->set_buffer_size(buff_size);
             ps->set_streaming(poll_rate);
         }
-        else if (acquisition_mode == "Rapid") { //fixme: quick hack to keep things working .. mode is called "Rapid Block"
+        else if (acquisition_mode == "Rapid Block") {
             auto nr_waveforms = info.eval_param_value<int>("nr_waveforms", variables);
             ps->set_rapid_block(nr_waveforms);
             auto pre_samples           = info.eval_param_value<int>("pre_samples", variables);
@@ -968,7 +968,7 @@ struct Ps6000Maker : BlockMaker
             ps->set_buffer_size(buff_size);
             ps->set_streaming(poll_rate);
         }
-        else if (acquisition_mode == "Rapid") { //fixme: quick hack to keep things working .. mode is called "Rapid Block"
+        else if (acquisition_mode == "Rapid Block") {
             auto nr_waveforms = info.eval_param_value<int>("nr_waveforms", variables);
             ps->set_rapid_block(nr_waveforms);
             auto pre_samples           = info.eval_param_value<int>("pre_samples", variables);
