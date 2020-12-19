@@ -683,7 +683,7 @@ struct Ps3000aMaker : BlockMaker
         auto enable_ai_a = info.param_value<bool>("enable_ai_a");
         if (enable_ai_a) {
             auto range_ai_a = info.param_value<double>("range_ai_a");
-            auto coupling_ai_a = info.param_value<bool>("coupling_ai_a");
+            auto coupling_ai_a = static_cast<gr::digitizers::coupling_t>(info.param_value<int>("coupling_ai_a"));
             auto offset_ai_a = info.param_value<double>("offset_ai_a");
             ps->set_aichan("A", enable_ai_a, range_ai_a, coupling_ai_a, offset_ai_a);
         }
@@ -691,7 +691,7 @@ struct Ps3000aMaker : BlockMaker
         auto enable_ai_b = info.param_value<bool>("enable_ai_b");
         if (enable_ai_b) {
             auto range_ai_b = info.param_value<double>("range_ai_b");
-            auto coupling_ai_b = info.param_value<bool>("coupling_ai_b");
+            auto coupling_ai_b = static_cast<gr::digitizers::coupling_t>(info.param_value<int>("coupling_ai_b"));
             auto offset_ai_b = info.param_value<double>("offset_ai_b");
             ps->set_aichan("B", enable_ai_b, range_ai_b, coupling_ai_b, offset_ai_b);
         }
@@ -699,7 +699,7 @@ struct Ps3000aMaker : BlockMaker
         auto enable_ai_c = info.param_value<bool>("enable_ai_c");
         if (enable_ai_c) {
             auto range_ai_c = info.param_value<double>("range_ai_c");
-            auto coupling_ai_c = info.param_value<bool>("coupling_ai_c");
+            auto coupling_ai_c = static_cast<gr::digitizers::coupling_t>(info.param_value<int>("coupling_ai_c"));
             auto offset_ai_c = info.param_value<double>("offset_ai_c");
             ps->set_aichan("C", enable_ai_c, range_ai_c, coupling_ai_c, offset_ai_c);
         }
@@ -707,7 +707,7 @@ struct Ps3000aMaker : BlockMaker
         auto enable_ai_d = info.param_value<bool>("enable_ai_d");
         if (enable_ai_d) {
             auto range_ai_d = info.param_value<double>("range_ai_d");
-            auto coupling_ai_d = info.param_value<bool>("coupling_ai_d");
+            auto coupling_ai_d = static_cast<gr::digitizers::coupling_t>(info.param_value<int>("coupling_ai_d"));
             auto offset_ai_d = info.param_value<double>("offset_ai_d");
             ps->set_aichan("D", enable_ai_d, range_ai_d, coupling_ai_d, offset_ai_d);
         }
@@ -786,7 +786,7 @@ struct Ps4000aMaker : BlockMaker
         auto enable_ai_a = info.param_value<bool>("enable_ai_a");
         if (enable_ai_a) {
             auto range_ai_a    = info.param_value<double>("range_ai_a");
-            auto coupling_ai_a = info.param_value<bool>("coupling_ai_a");
+            auto coupling_ai_a = static_cast<gr::digitizers::coupling_t>(info.param_value<int>("coupling_ai_a"));
             auto offset_ai_a   = info.param_value<double>("offset_ai_a");
             ps->set_aichan("A", enable_ai_a, range_ai_a, coupling_ai_a, offset_ai_a);
         }
@@ -794,7 +794,7 @@ struct Ps4000aMaker : BlockMaker
         auto enable_ai_b = info.param_value<bool>("enable_ai_b");
         if (enable_ai_b) {
             auto range_ai_b = info.param_value<double>("range_ai_b");
-            auto coupling_ai_b = info.param_value<bool>("coupling_ai_b");
+            auto coupling_ai_b = static_cast<gr::digitizers::coupling_t>(info.param_value<int>("coupling_ai_b"));
             auto offset_ai_b = info.param_value<double>("offset_ai_b");
             ps->set_aichan("B", enable_ai_b, range_ai_b, coupling_ai_b, offset_ai_b);
         }
@@ -802,7 +802,7 @@ struct Ps4000aMaker : BlockMaker
         auto enable_ai_c = info.param_value<bool>("enable_ai_c");
         if (enable_ai_c) {
             auto range_ai_c = info.param_value<double>("range_ai_c");
-            auto coupling_ai_c = info.param_value<bool>("coupling_ai_c");
+            auto coupling_ai_c = static_cast<gr::digitizers::coupling_t>(info.param_value<int>("coupling_ai_c"));
             auto offset_ai_c = info.param_value<double>("offset_ai_c");
             ps->set_aichan("C", enable_ai_c, range_ai_c, coupling_ai_c, offset_ai_c);
         }
@@ -810,7 +810,7 @@ struct Ps4000aMaker : BlockMaker
         auto enable_ai_d = info.param_value<bool>("enable_ai_d");
         if (enable_ai_d) {
             auto range_ai_d = info.param_value<double>("range_ai_d");
-            auto coupling_ai_d = info.param_value<bool>("coupling_ai_d");
+            auto coupling_ai_d = static_cast<gr::digitizers::coupling_t>(info.param_value<int>("coupling_ai_d"));
             auto offset_ai_d = info.param_value<double>("offset_ai_d");
             ps->set_aichan("D", enable_ai_d, range_ai_d, coupling_ai_d, offset_ai_d);
         }
@@ -818,7 +818,7 @@ struct Ps4000aMaker : BlockMaker
         auto enable_ai_e = info.param_value<bool>("enable_ai_e");
         if (enable_ai_e) {
             auto range_ai_e = info.param_value<double>("range_ai_e");
-            auto coupling_ai_e = info.param_value<bool>("coupling_ai_e");
+            auto coupling_ai_e = static_cast<gr::digitizers::coupling_t>(info.param_value<int>("coupling_ai_e"));
             auto offset_ai_e = info.param_value<double>("offset_ai_e");
             ps->set_aichan("E", enable_ai_e, range_ai_e, coupling_ai_e, offset_ai_e);
         }
@@ -826,7 +826,7 @@ struct Ps4000aMaker : BlockMaker
         auto enable_ai_f = info.param_value<bool>("enable_ai_f");
         if (enable_ai_f) {
             auto range_ai_f = info.param_value<double>("range_ai_f");
-            auto coupling_ai_f = info.param_value<bool>("coupling_ai_f");
+            auto coupling_ai_f = static_cast<gr::digitizers::coupling_t>(info.param_value<int>("coupling_ai_f"));
             auto offset_ai_f = info.param_value<double>("offset_ai_f");
             ps->set_aichan("F", enable_ai_f, range_ai_f, coupling_ai_f, offset_ai_f);
         }
@@ -834,7 +834,7 @@ struct Ps4000aMaker : BlockMaker
         auto enable_ai_g = info.param_value<bool>("enable_ai_g");
         if (enable_ai_g) {
             auto range_ai_g = info.param_value<double>("range_ai_g");
-            auto coupling_ai_g = info.param_value<bool>("coupling_ai_g");
+            auto coupling_ai_g = static_cast<gr::digitizers::coupling_t>(info.param_value<int>("coupling_ai_g"));
             auto offset_ai_g = info.param_value<double>("offset_ai_g");
             ps->set_aichan("G", enable_ai_g, range_ai_g, coupling_ai_g, offset_ai_g);
         }
@@ -842,7 +842,7 @@ struct Ps4000aMaker : BlockMaker
         auto enable_ai_h = info.param_value<bool>("enable_ai_h");
         if (enable_ai_h) {
             auto range_ai_h = info.param_value<double>("range_ai_h");
-            auto coupling_ai_h = info.param_value<bool>("coupling_ai_h");
+            auto coupling_ai_h = static_cast<gr::digitizers::coupling_t>(info.param_value<int>("coupling_ai_h"));
             auto offset_ai_h = info.param_value<double>("offset_ai_h");
             ps->set_aichan("H", enable_ai_h, range_ai_h, coupling_ai_h, offset_ai_h);
         }
@@ -914,7 +914,7 @@ struct Ps6000Maker : BlockMaker
         auto enable_ai_a = info.param_value<bool>("enable_ai_a");
         if (enable_ai_a) {
             auto range_ai_a = info.param_value<double>("range_ai_a");
-            auto coupling_ai_a = info.param_value<bool>("coupling_ai_a");
+            gr::digitizers::coupling_t coupling_ai_a = static_cast<gr::digitizers::coupling_t>(info.param_value<int>("coupling_ai_a"));
             auto offset_ai_a = info.param_value<double>("offset_ai_a");
             ps->set_aichan("A", enable_ai_a, range_ai_a, coupling_ai_a, offset_ai_a);
         }
@@ -922,7 +922,7 @@ struct Ps6000Maker : BlockMaker
         auto enable_ai_b = info.param_value<bool>("enable_ai_b");
         if (enable_ai_b) {
             auto range_ai_b = info.param_value<double>("range_ai_b");
-            auto coupling_ai_b = info.param_value<bool>("coupling_ai_b");
+            gr::digitizers::coupling_t coupling_ai_b = static_cast<gr::digitizers::coupling_t>(info.param_value<int>("coupling_ai_b"));
             auto offset_ai_b = info.param_value<double>("offset_ai_b");
             ps->set_aichan("B", enable_ai_b, range_ai_b, coupling_ai_b, offset_ai_b);
         }
@@ -930,7 +930,7 @@ struct Ps6000Maker : BlockMaker
         auto enable_ai_c = info.param_value<bool>("enable_ai_c");
         if (enable_ai_c) {
             auto range_ai_c = info.param_value<double>("range_ai_c");
-            auto coupling_ai_c = info.param_value<bool>("coupling_ai_c");
+            gr::digitizers::coupling_t coupling_ai_c = static_cast<gr::digitizers::coupling_t>(info.param_value<int>("coupling_ai_c"));
             auto offset_ai_c = info.param_value<double>("offset_ai_c");
             ps->set_aichan("C", enable_ai_c, range_ai_c, coupling_ai_c, offset_ai_c);
         }
@@ -938,7 +938,7 @@ struct Ps6000Maker : BlockMaker
         auto enable_ai_d = info.param_value<bool>("enable_ai_d");
         if (enable_ai_d) {
             auto range_ai_d = info.param_value<double>("range_ai_d");
-            auto coupling_ai_d = info.param_value<bool>("coupling_ai_d");
+            gr::digitizers::coupling_t coupling_ai_d = static_cast<gr::digitizers::coupling_t>(info.param_value<int>("coupling_ai_d"));
             auto offset_ai_d = info.param_value<double>("offset_ai_d");
             ps->set_aichan("D", enable_ai_d, range_ai_d, coupling_ai_d, offset_ai_d);
         }
@@ -1373,14 +1373,20 @@ std::unique_ptr<FlowGraph> make_flowgraph(std::istream &input)
 		graph->add(block, info.id, info.key);
 	}
 
+ 	//graph->connect(info.src_id);
+
 	for (const auto info : parser.connections()) {
 	    // connect only if both ends are enabled
 	    if (std::count(disabled_blocks.begin(), disabled_blocks.end(), info.src_id)
-	            || std::count(disabled_blocks.begin(), disabled_blocks.end(), info.dst_id)) {
+	     || std::count(disabled_blocks.begin(), disabled_blocks.end(), info.dst_id))
+	    {
 	        continue;
 	    }
+	    else
+	    {
 	    graph->connect(info.src_id, info.src_key,
 	                   info.dst_id, info.dst_key);
+	    }
     }
 	return std::move(graph);
 }
