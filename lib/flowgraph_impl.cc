@@ -672,8 +672,13 @@ struct Ps3000aMaker : BlockMaker
         auto samp_rate             = info.eval_param_value<double>("samp_rate", variables);
         auto downsampling_mode     = info.param_value<int>("downsampling_mode");
         auto downsampling_factor   = info.eval_param_value<int>("downsampling_factor", variables);
+        auto acquisition_mode     = info.param_value("acquisition_mode");
 
-        auto ps = gr::digitizers::picoscope_3000a::make(serial_number, true);
+        bool auto_arm = true;
+        if (acquisition_mode == "Streaming") {
+            auto_arm = false; // otehrwise lost samples during startup
+        }
+        auto ps = gr::digitizers::picoscope_3000a::make(serial_number, auto_arm);
         ps->set_trigger_once(trigger_once);
         ps->set_samp_rate(samp_rate);
         ps->set_downsampling(
@@ -739,8 +744,6 @@ struct Ps3000aMaker : BlockMaker
             }
         }
 
-        auto acquisition_mode = info.param_value("acquisition_mode");
-
         if (acquisition_mode == "Streaming") {
             auto buff_size = info.eval_param_value<int>("buff_size", variables);
             auto poll_rate = info.eval_param_value<int>("poll_rate", variables);
@@ -775,8 +778,13 @@ struct Ps4000aMaker : BlockMaker
         auto samp_rate             = info.eval_param_value<double>("samp_rate", variables);
         auto downsampling_mode     = info.param_value<int>("downsampling_mode");
         auto downsampling_factor   = info.eval_param_value<int>("downsampling_factor", variables);
+        auto acquisition_mode      = info.param_value("acquisition_mode");
 
-        auto ps = gr::digitizers::picoscope_4000a::make(serial_number, true);
+        bool auto_arm = true;
+        if (acquisition_mode == "Streaming") {
+            auto_arm = false; // otehrwise lost samples during startup
+        }
+        auto ps = gr::digitizers::picoscope_4000a::make(serial_number, auto_arm);
         ps->set_trigger_once(trigger_once);
         ps->set_samp_rate(samp_rate);
         ps->set_downsampling(
@@ -867,8 +875,6 @@ struct Ps4000aMaker : BlockMaker
             }
         }
 
-        auto acquisition_mode = info.param_value("acquisition_mode");
-
         if (acquisition_mode == "Streaming") {
             auto buff_size = info.eval_param_value<int>("buff_size", variables);
             auto poll_rate = info.eval_param_value<int>("poll_rate", variables);
@@ -903,8 +909,13 @@ struct Ps6000Maker : BlockMaker
         auto samp_rate             = info.eval_param_value<double>("samp_rate", variables);
         auto downsampling_mode     = info.param_value<int>("downsampling_mode");
         auto downsampling_factor   = info.eval_param_value<int>("downsampling_factor", variables);
+        auto acquisition_mode      = info.param_value("acquisition_mode");
 
-        auto ps = gr::digitizers::picoscope_6000::make(serial_number, true);
+        bool auto_arm = true;
+        if (acquisition_mode == "Streaming") {
+            auto_arm = false; // otehrwise lost samples during startup
+        }
+        auto ps = gr::digitizers::picoscope_6000::make(serial_number, auto_arm);
         ps->set_trigger_once(trigger_once);
         ps->set_samp_rate(samp_rate);
         ps->set_downsampling(
@@ -959,8 +970,6 @@ struct Ps6000Maker : BlockMaker
                         trigger_threshold);
             }
         }
-
-        auto acquisition_mode = info.param_value("acquisition_mode");
 
         if (acquisition_mode == "Streaming") {
             auto buff_size = info.eval_param_value<int>("buff_size", variables);
