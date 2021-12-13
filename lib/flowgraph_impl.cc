@@ -47,10 +47,10 @@ std::ostream& operator<<(std::ostream& os, const BlockInfo& dt)
     os << "id/key: " << dt.id << "/"  << dt.key;
 
     if (dt.params.size()) {
-    	os << ", params:\n";
-		for (const auto& kv : dt.params) {
-			os << "  " << kv.first << " : " << kv.second << "\n";
-		}
+        os << ", params:\n";
+        for (const auto& kv : dt.params) {
+            os << "  " << kv.first << " : " << kv.second << "\n";
+        }
     }
 
     return os;
@@ -283,32 +283,32 @@ struct FloatToComplexMaker : BlockMaker
 
 struct SigSourceMaker : BlockMaker
 {
-	const std::map<std::string, gr::analog::gr_waveform_t> enum_repr =
-	{
-		{"analog.GR_CONST_WAVE", gr::analog::GR_CONST_WAVE},
-		{"analog.GR_SIN_WAVE", gr::analog::GR_SIN_WAVE},
-		{"analog.GR_COS_WAVE", gr::analog::GR_COS_WAVE},
-		{"analog.GR_SQR_WAVE", gr::analog::GR_SQR_WAVE},
-		{"analog.GR_TRI_WAVE", gr::analog::GR_TRI_WAVE},
-		{"analog.GR_SAW_WAVE", gr::analog::GR_SAW_WAVE},
-	};
+    const std::map<std::string, gr::analog::gr_waveform_t> enum_repr =
+    {
+        {"analog.GR_CONST_WAVE", gr::analog::GR_CONST_WAVE},
+        {"analog.GR_SIN_WAVE", gr::analog::GR_SIN_WAVE},
+        {"analog.GR_COS_WAVE", gr::analog::GR_COS_WAVE},
+        {"analog.GR_SQR_WAVE", gr::analog::GR_SQR_WAVE},
+        {"analog.GR_TRI_WAVE", gr::analog::GR_TRI_WAVE},
+        {"analog.GR_SAW_WAVE", gr::analog::GR_SAW_WAVE},
+    };
 
     gr::analog::gr_waveform_t lexical_cast(const std::string & s)
     {
-    	return enum_repr.find(s)->second;
+        return enum_repr.find(s)->second;
     }
 
-	gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
-	{
-		assert(info.key == analog_sig_source_x_key);
-		auto sampling_freq = info.eval_param_value<double>("samp_rate", variables);
-		auto wave_freq     = info.eval_param_value<double>("freq", variables);
-		auto ampl          = info.eval_param_value<double>("amp", variables);
-		auto offset        = info.eval_param_value<double>("offset", variables);
-		auto waveform_type = lexical_cast(info.param_value<>("waveform"));
+    gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
+    {
+        assert(info.key == analog_sig_source_x_key);
+        auto sampling_freq = info.eval_param_value<double>("samp_rate", variables);
+        auto wave_freq     = info.eval_param_value<double>("freq", variables);
+        auto ampl          = info.eval_param_value<double>("amp", variables);
+        auto offset        = info.eval_param_value<double>("offset", variables);
+        auto waveform_type = lexical_cast(info.param_value<>("waveform"));
 
-		return gr::analog::sig_source_f::make(sampling_freq, waveform_type, wave_freq, ampl, offset);
-	}
+        return gr::analog::sig_source_f::make(sampling_freq, waveform_type, wave_freq, ampl, offset);
+    }
 };
 
 struct ThrottleMaker : BlockMaker
@@ -359,60 +359,60 @@ struct TagDebugMaker : BlockMaker
 
 struct AggregationMaker : BlockMaker
 {
-  gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
-  {
-     assert(info.key == block_aggregation_key);
+    gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
+    {
+        assert(info.key == block_aggregation_key);
 
-     auto alg_id    = info.eval_param_value<int>("alg_id", variables);
-     auto decim    = info.eval_param_value<int>("decim", variables);
-     auto delay    = info.eval_param_value<int>("delay", variables);
-     auto fir_taps    = info.eval_param_vector<float>("fir_taps", variables);
-     auto low_freq    = info.eval_param_value<double>("low_freq", variables);
-     auto up_freq    = info.eval_param_value<double>("up_freq", variables);
-     auto tr_width    = info.eval_param_value<double>("tr_width", variables);
-     auto fb_user_taps    = info.eval_param_vector<double>("fb_user_taps", variables);
-     auto fw_user_taps    = info.eval_param_vector<double>("fw_user_taps", variables);
-     auto samp_rate    = info.eval_param_value<double>("samp_rate", variables);
+        auto alg_id    = info.eval_param_value<int>("alg_id", variables);
+        auto decim    = info.eval_param_value<int>("decim", variables);
+        auto delay    = info.eval_param_value<int>("delay", variables);
+        auto fir_taps    = info.eval_param_vector<float>("fir_taps", variables);
+        auto low_freq    = info.eval_param_value<double>("low_freq", variables);
+        auto up_freq    = info.eval_param_value<double>("up_freq", variables);
+        auto tr_width    = info.eval_param_value<double>("tr_width", variables);
+        auto fb_user_taps    = info.eval_param_vector<double>("fb_user_taps", variables);
+        auto fw_user_taps    = info.eval_param_vector<double>("fw_user_taps", variables);
+        auto samp_rate    = info.eval_param_value<double>("samp_rate", variables);
 
-     auto block =  gr::digitizers::block_aggregation::make(alg_id, decim, delay, fir_taps, low_freq, up_freq, tr_width, fb_user_taps, fw_user_taps, samp_rate);
+        auto block =  gr::digitizers::block_aggregation::make(alg_id, decim, delay, fir_taps, low_freq, up_freq, tr_width, fb_user_taps, fw_user_taps, samp_rate);
 
-     return block;
-  }
+        return block;
+    }
 };
 
 struct AmplitudeAndPhaseMaker : BlockMaker
 {
-  gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
-  {
-     assert(info.key == block_amplitude_and_phase_key);
-     auto samp_rate    = info.eval_param_value<double>("samp_rate", variables);
-     auto delay    = info.eval_param_value<double>("delay", variables);
-     auto decim    = info.eval_param_value<int>("decim", variables);
-     auto gain    = info.eval_param_value<double>("gain", variables);
-     auto cutoff    = info.eval_param_value<double>("cutoff", variables);
-     auto tr_width    = info.eval_param_value<double>("tr_width", variables);
-     auto hil_win    = info.eval_param_value<int>("hil_win", variables);
+    gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
+    {
+        assert(info.key == block_amplitude_and_phase_key);
+        auto samp_rate    = info.eval_param_value<double>("samp_rate", variables);
+        auto delay    = info.eval_param_value<double>("delay", variables);
+        auto decim    = info.eval_param_value<int>("decim", variables);
+        auto gain    = info.eval_param_value<double>("gain", variables);
+        auto cutoff    = info.eval_param_value<double>("cutoff", variables);
+        auto tr_width    = info.eval_param_value<double>("tr_width", variables);
+        auto hil_win    = info.eval_param_value<int>("hil_win", variables);
 
-     auto block =  gr::digitizers::block_amplitude_and_phase::make(samp_rate, delay, decim, gain, cutoff, tr_width, hil_win);
+        auto block =  gr::digitizers::block_amplitude_and_phase::make(samp_rate, delay, decim, gain, cutoff, tr_width, hil_win);
 
-     return block;
-  }
+        return block;
+    }
 };
 
 struct FrequencyEstimatorMaker : BlockMaker
 {
-  gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
-  {
-     assert(info.key == freq_estimator_key);
-     auto samp_rate    = info.eval_param_value<double>("samp_rate", variables);
-     auto sig_window_size    = info.eval_param_value<int>("sig_window_size", variables);
-     auto freq_window_size    = info.eval_param_value<int>("freq_window_size", variables);
-     auto decim    = info.eval_param_value<int>("decim", variables);
+    gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
+    {
+        assert(info.key == freq_estimator_key);
+        auto samp_rate    = info.eval_param_value<double>("samp_rate", variables);
+        auto sig_window_size    = info.eval_param_value<int>("sig_window_size", variables);
+        auto freq_window_size    = info.eval_param_value<int>("freq_window_size", variables);
+        auto decim    = info.eval_param_value<int>("decim", variables);
 
-     auto block =  gr::digitizers::freq_estimator::make(samp_rate, sig_window_size, freq_window_size, decim);
+        auto block =  gr::digitizers::freq_estimator::make(samp_rate, sig_window_size, freq_window_size, decim);
 
-     return block;
-  }
+        return block;
+    }
 };
 
 struct ComplexToMagDegMaker : BlockMaker
@@ -427,49 +427,49 @@ struct ComplexToMagDegMaker : BlockMaker
 
 struct DemuxMaker : BlockMaker
 {
-  gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
-  {
-     assert(info.key == block_demux_key);
+    gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
+    {
+        assert(info.key == block_demux_key);
 
-     auto bit_to_keep    = info.eval_param_value<double>("bit_to_keep", variables);
+        auto bit_to_keep    = info.eval_param_value<double>("bit_to_keep", variables);
 
-     auto block =  gr::digitizers::block_demux::make(bit_to_keep);
+        auto block =  gr::digitizers::block_demux::make(bit_to_keep);
 
-     return block;
-  }
+        return block;
+    }
 };
 
 struct ScalingOffsetMaker : BlockMaker
 {
-  gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
-  {
-     assert(info.key == block_scaling_offset_key);
+    gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
+    {
+        assert(info.key == block_scaling_offset_key);
 
-     auto scale    = info.eval_param_value<double>("scale", variables);
-     auto offset    = info.eval_param_value<double>("offset", variables);
+        auto scale    = info.eval_param_value<double>("scale", variables);
+        auto offset    = info.eval_param_value<double>("offset", variables);
 
-     auto block =  gr::digitizers::block_scaling_offset::make(scale, offset);
+        auto block =  gr::digitizers::block_scaling_offset::make(scale, offset);
 
-     return block;
-  }
+        return block;
+    }
 };
 
 struct SpectralPeaksMaker : BlockMaker
 {
-  gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
-  {
-     assert(info.key == block_spectral_peaks_key);
+    gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
+    {
+        assert(info.key == block_spectral_peaks_key);
 
-     auto samp_rate  = info.eval_param_value<double>("samp_rate", variables);
-     auto fft_win    = info.eval_param_value<int>("fft_win", variables);
-     auto med_n      = info.eval_param_value<int>("med_n", variables);
-     auto avg_n      = info.eval_param_value<int>("avg_n", variables);
-     auto prox_n     = info.eval_param_value<int>("prox_n", variables);
+        auto samp_rate  = info.eval_param_value<double>("samp_rate", variables);
+        auto fft_win    = info.eval_param_value<int>("fft_win", variables);
+        auto med_n      = info.eval_param_value<int>("med_n", variables);
+        auto avg_n      = info.eval_param_value<int>("avg_n", variables);
+        auto prox_n     = info.eval_param_value<int>("prox_n", variables);
 
-     auto block =  gr::digitizers::block_spectral_peaks::make(samp_rate, fft_win, med_n, avg_n, prox_n);
+        auto block =  gr::digitizers::block_spectral_peaks::make(samp_rate, fft_win, med_n, avg_n, prox_n);
 
-     return block;
-  }
+        return block;
+    }
 };
 
 struct CascadeSinkMaker : BlockMaker
@@ -499,66 +499,66 @@ struct CascadeSinkMaker : BlockMaker
         int post_samples = info.eval_param_value<int>("post_trigger_samples_raw", variables);
 
         return gr::digitizers::cascade_sink::make(alg_id,delay,
-                                                  fir_taps,
-                                                  low_freq,
-                                                  up_freq,
-                                                  tr_width,
-                                                  fb_user_taps,
-                                                  fw_user_taps,
-                                                  samp_rate,
-                                                  pm_buffer,
-                                                  signal_name,
-                                                  signal_unit,
-                                                  streaming_sinks_enabled,
-                                                  triggered_sinks_enabled,
-                                                  frequency_sinks_enabled,
-                                                  postmortem_sinks_enabled,
-                                                  interlocks_enabled,
-                                                  pre_samples,
-                                                  post_samples);
+                fir_taps,
+                low_freq,
+                up_freq,
+                tr_width,
+                fb_user_taps,
+                fw_user_taps,
+                samp_rate,
+                pm_buffer,
+                signal_name,
+                signal_unit,
+                streaming_sinks_enabled,
+                triggered_sinks_enabled,
+                frequency_sinks_enabled,
+                postmortem_sinks_enabled,
+                interlocks_enabled,
+                pre_samples,
+                post_samples);
 
     }
 };
 struct ChiSquareFitMaker : BlockMaker
 {
-  gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
-  {
-     assert(info.key == chi_square_fit_key);
+    gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
+    {
+        assert(info.key == chi_square_fit_key);
 
-     auto num_samps    = info.eval_param_value<int>("num_samps", variables);
-     auto function    = info.param_value("function");
-     auto fun_u    = info.eval_param_value<double>("fun_u", variables);
-     auto fun_l    = info.eval_param_value<double>("fun_l", variables);
-     auto num_params    = info.eval_param_value<int>("num_params", variables);
-     auto par_names    = info.param_value("par_names");
-     auto param_init    = info.eval_param_vector<double>("param_init", variables);
-     auto param_err    = info.eval_param_vector<double>("param_err", variables);
-     auto param_fit    = info.eval_param_vector<int>("param_fit", variables);
-     auto par_sp_l    = info.eval_param_vector<double>("par_sp_l", variables);
-     auto par_sp_u    = info.eval_param_vector<double>("par_sp_u", variables);
-     auto chi_sq    = info.eval_param_value<double>("chi_sq", variables);
+        auto num_samps    = info.eval_param_value<int>("num_samps", variables);
+        auto function    = info.param_value("function");
+        auto fun_u    = info.eval_param_value<double>("fun_u", variables);
+        auto fun_l    = info.eval_param_value<double>("fun_l", variables);
+        auto num_params    = info.eval_param_value<int>("num_params", variables);
+        auto par_names    = info.param_value("par_names");
+        auto param_init    = info.eval_param_vector<double>("param_init", variables);
+        auto param_err    = info.eval_param_vector<double>("param_err", variables);
+        auto param_fit    = info.eval_param_vector<int>("param_fit", variables);
+        auto par_sp_l    = info.eval_param_vector<double>("par_sp_l", variables);
+        auto par_sp_u    = info.eval_param_vector<double>("par_sp_u", variables);
+        auto chi_sq    = info.eval_param_value<double>("chi_sq", variables);
 
-     auto block =  gr::digitizers::chi_square_fit::make(num_samps, function, fun_u, fun_l,
-             num_params, par_names, param_init, param_err, param_fit, par_sp_u, par_sp_l, chi_sq);
+        auto block =  gr::digitizers::chi_square_fit::make(num_samps, function, fun_u, fun_l,
+                      num_params, par_names, param_init, param_err, param_fit, par_sp_u, par_sp_l, chi_sq);
 
-     return block;
-  }
+        return block;
+    }
 };
 
 struct DecimateAndAdjustTimebaseMaker : BlockMaker
 {
-  gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
-  {
-     assert(info.key == decimate_and_adjust_timebase_key);
+    gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
+    {
+        assert(info.key == decimate_and_adjust_timebase_key);
 
-     auto decimation  = info.eval_param_value<int>("decimation", variables);
-     auto delay       = info.eval_param_value<double>("delay", variables);
-     auto samp_rate   = info.eval_param_value<float>("samp_rate", variables);
+        auto decimation  = info.eval_param_value<int>("decimation", variables);
+        auto delay       = info.eval_param_value<double>("delay", variables);
+        auto samp_rate   = info.eval_param_value<float>("samp_rate", variables);
 
-     auto block =  gr::digitizers::decimate_and_adjust_timebase::make(decimation, delay, samp_rate);
+        auto block =  gr::digitizers::decimate_and_adjust_timebase::make(decimation, delay, samp_rate);
 
-     return block;
-  }
+        return block;
+    }
 };
 
 struct EdgeTriggerMaker : BlockMaker
@@ -594,36 +594,36 @@ struct EdgeTriggerReceiverMaker : BlockMaker
 
 struct ExtractorMaker : BlockMaker
 {
-  gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
-  {
-      assert(info.key == demux_ff_key);
-      auto pre_trigger_window  = info.eval_param_value<unsigned>("pre_trigger_window", variables);
-      auto post_trigger_window = info.eval_param_value<unsigned>("post_trigger_window", variables);
+    gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
+    {
+        assert(info.key == demux_ff_key);
+        auto pre_trigger_window  = info.eval_param_value<unsigned>("pre_trigger_window", variables);
+        auto post_trigger_window = info.eval_param_value<unsigned>("post_trigger_window", variables);
 
-      auto block =  gr::digitizers::demux_ff::make(post_trigger_window, pre_trigger_window);
+        auto block =  gr::digitizers::demux_ff::make(post_trigger_window, pre_trigger_window);
 
-      return block;
-  }
+        return block;
+    }
 };
 
 struct FreqSinkMaker : BlockMaker
 {
-  gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
-  {
-     assert(info.key == freq_sink_f_key);
+    gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
+    {
+        assert(info.key == freq_sink_f_key);
 
-     auto acquisition_type = info.eval_param_value<int>("acquisition_type", variables);
-     auto signal_name      = info.param_value("signal_name");
-     auto samp_rate        = info.eval_param_value<float>("samp_rate", variables);
-     auto nbins            = info.eval_param_value<int>("nbins", variables);
-     auto nmeasurements    = info.eval_param_value<int>("nmeasurements", variables);
-     auto nbuffers         = info.eval_param_value<int>("nbuffers", variables);
+        auto acquisition_type = info.eval_param_value<int>("acquisition_type", variables);
+        auto signal_name      = info.param_value("signal_name");
+        auto samp_rate        = info.eval_param_value<float>("samp_rate", variables);
+        auto nbins            = info.eval_param_value<int>("nbins", variables);
+        auto nmeasurements    = info.eval_param_value<int>("nmeasurements", variables);
+        auto nbuffers         = info.eval_param_value<int>("nbuffers", variables);
 
-     auto block =  gr::digitizers::freq_sink_f::make(signal_name, samp_rate, nbins, nmeasurements,
-             nbuffers, gr::digitizers::freq_sink_mode_t(acquisition_type));
+        auto block =  gr::digitizers::freq_sink_f::make(signal_name, samp_rate, nbins, nmeasurements,
+                      nbuffers, gr::digitizers::freq_sink_mode_t(acquisition_type));
 
-     return block;
-  }
+        return block;
+    }
 };
 
 struct FunctionMaker : BlockMaker
@@ -648,17 +648,17 @@ struct FunctionMaker : BlockMaker
 
 struct InterlockGenerationMaker : BlockMaker
 {
-  gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
-  {
-     assert(info.key == interlock_generation_ff_key);
+    gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
+    {
+        assert(info.key == interlock_generation_ff_key);
 
-     auto max_max    = info.eval_param_value<double>("max_max", variables);
-     auto max_min    = info.eval_param_value<double>("max_min", variables);
+        auto max_max    = info.eval_param_value<double>("max_max", variables);
+        auto max_min    = info.eval_param_value<double>("max_min", variables);
 
-     auto block =  gr::digitizers::interlock_generation_ff::make(max_min, max_max);
+        auto block =  gr::digitizers::interlock_generation_ff::make(max_min, max_max);
 
-     return block;
-  }
+        return block;
+    }
 };
 
 struct Ps3000aMaker : BlockMaker
@@ -682,8 +682,8 @@ struct Ps3000aMaker : BlockMaker
         ps->set_trigger_once(trigger_once);
         ps->set_samp_rate(samp_rate);
         ps->set_downsampling(
-                static_cast<gr::digitizers::downsampling_mode_t>(downsampling_mode),
-                downsampling_factor);
+            static_cast<gr::digitizers::downsampling_mode_t>(downsampling_mode),
+            downsampling_factor);
 
         auto enable_ai_a = info.param_value<bool>("enable_ai_a");
         if (enable_ai_a) {
@@ -732,15 +732,15 @@ struct Ps3000aMaker : BlockMaker
                 auto pin_number = info.param_value<uint32_t>("pin_number");
                 auto trigger_direction = info.param_value<int>("trigger_direction");
                 ps->set_di_trigger(pin_number,
-                        static_cast<gr::digitizers::trigger_direction_t>(trigger_direction));
+                                   static_cast<gr::digitizers::trigger_direction_t>(trigger_direction));
             }
             else {
                 auto trigger_direction = info.param_value<int>("trigger_direction");
                 auto trigger_threshold = info.param_value<double>("trigger_threshold");
                 ps->set_aichan_trigger(
-                        trigger_source,
-                        static_cast<gr::digitizers::trigger_direction_t>(trigger_direction),
-                        trigger_threshold);
+                    trigger_source,
+                    static_cast<gr::digitizers::trigger_direction_t>(trigger_direction),
+                    trigger_threshold);
             }
         }
 
@@ -788,8 +788,8 @@ struct Ps4000aMaker : BlockMaker
         ps->set_trigger_once(trigger_once);
         ps->set_samp_rate(samp_rate);
         ps->set_downsampling(
-                static_cast<gr::digitizers::downsampling_mode_t>(downsampling_mode),
-                downsampling_factor);
+            static_cast<gr::digitizers::downsampling_mode_t>(downsampling_mode),
+            downsampling_factor);
 
         auto enable_ai_a = info.param_value<bool>("enable_ai_a");
         if (enable_ai_a) {
@@ -863,15 +863,15 @@ struct Ps4000aMaker : BlockMaker
                 auto pin_number = info.param_value<uint32_t>("pin_number");
                 auto trigger_direction = info.param_value<int>("trigger_direction");
                 ps->set_di_trigger(pin_number,
-                        static_cast<gr::digitizers::trigger_direction_t>(trigger_direction));
+                                   static_cast<gr::digitizers::trigger_direction_t>(trigger_direction));
             }
             else {
                 auto trigger_direction = info.param_value<int>("trigger_direction");
                 auto trigger_threshold = info.param_value<double>("trigger_threshold");
                 ps->set_aichan_trigger(
-                        trigger_source,
-                        static_cast<gr::digitizers::trigger_direction_t>(trigger_direction),
-                        trigger_threshold);
+                    trigger_source,
+                    static_cast<gr::digitizers::trigger_direction_t>(trigger_direction),
+                    trigger_threshold);
             }
         }
 
@@ -919,8 +919,8 @@ struct Ps6000Maker : BlockMaker
         ps->set_trigger_once(trigger_once);
         ps->set_samp_rate(samp_rate);
         ps->set_downsampling(
-                static_cast<gr::digitizers::downsampling_mode_t>(downsampling_mode),
-                downsampling_factor);
+            static_cast<gr::digitizers::downsampling_mode_t>(downsampling_mode),
+            downsampling_factor);
 
         auto enable_ai_a = info.param_value<bool>("enable_ai_a");
         if (enable_ai_a) {
@@ -959,9 +959,9 @@ struct Ps6000Maker : BlockMaker
             auto trigger_direction = info.param_value<int>("trigger_direction");
             auto trigger_threshold = info.param_value<double>("trigger_threshold");
             ps->set_aichan_trigger(
-                    trigger_source,
-                    static_cast<gr::digitizers::trigger_direction_t>(trigger_direction),
-                    trigger_threshold);
+                trigger_source,
+                static_cast<gr::digitizers::trigger_direction_t>(trigger_direction),
+                trigger_threshold);
         }
 
         if (acquisition_mode == "Streaming") {
@@ -1005,57 +1005,57 @@ struct PostMortemSinkMaker : BlockMaker
 
 struct SignalAveragerMaker : BlockMaker
 {
-  gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
-  {
-     assert(info.key == signal_averager_key);
+    gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
+    {
+        assert(info.key == signal_averager_key);
 
-     auto window_size    = info.eval_param_value<int>("window_size", variables);
-     auto n_ports    = info.eval_param_value<int>("n_ports", variables);
-     auto samp_rate   = info.eval_param_value<float>("samp_rate", variables);
+        auto window_size    = info.eval_param_value<int>("window_size", variables);
+        auto n_ports    = info.eval_param_value<int>("n_ports", variables);
+        auto samp_rate   = info.eval_param_value<float>("samp_rate", variables);
 
-     auto block =  gr::digitizers::signal_averager::make(n_ports, window_size, samp_rate);
+        auto block =  gr::digitizers::signal_averager::make(n_ports, window_size, samp_rate);
 
-     return block;
-  }
+        return block;
+    }
 };
 
 struct StftAlgorithmsMaker : BlockMaker
 {
-  gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
-  {
-     assert(info.key == stft_algorithms_key);
-     auto samp_rate    = info.eval_param_value<double>("samp_rate", variables);
-     auto delta_t    = info.eval_param_value<double>("delta_t", variables);
-     auto alg_id    = static_cast<gr::digitizers::stft_algorithm_id_t>(info.eval_param_value<int>("alg_id", variables));// static_cast, since eval_param_value cannot handle enums :(
-     auto win_size    = info.eval_param_value<int>("win_size", variables);
-     auto win_type    = info.eval_param_enum("win_type");
-     auto fq_low    = info.eval_param_value<double>("fq_low", variables);
-     auto fq_hi    = info.eval_param_value<double>("fq_hi", variables);
-     auto nbins    = info.eval_param_value<int>("nbins", variables);
+    gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
+    {
+        assert(info.key == stft_algorithms_key);
+        auto samp_rate    = info.eval_param_value<double>("samp_rate", variables);
+        auto delta_t    = info.eval_param_value<double>("delta_t", variables);
+        auto alg_id    = static_cast<gr::digitizers::stft_algorithm_id_t>(info.eval_param_value<int>("alg_id", variables));// static_cast, since eval_param_value cannot handle enums :(
+        auto win_size    = info.eval_param_value<int>("win_size", variables);
+        auto win_type    = info.eval_param_enum("win_type");
+        auto fq_low    = info.eval_param_value<double>("fq_low", variables);
+        auto fq_hi    = info.eval_param_value<double>("fq_hi", variables);
+        auto nbins    = info.eval_param_value<int>("nbins", variables);
 
 
-     auto block =  gr::digitizers::stft_algorithms::make(samp_rate, delta_t, win_size, win_type, alg_id, fq_low, fq_hi, nbins);
+        auto block =  gr::digitizers::stft_algorithms::make(samp_rate, delta_t, win_size, win_type, alg_id, fq_low, fq_hi, nbins);
 
-     return block;
-  }
+        return block;
+    }
 };
 
 struct StftGoertzlDynamicMaker : BlockMaker
 {
-  gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
-  {
-     assert(info.key == stft_goertzl_dynamic_key);
+    gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
+    {
+        assert(info.key == stft_goertzl_dynamic_key);
 
-     auto samp_rate    = info.eval_param_value<double>("samp_rate", variables);
-     auto delta_t    = info.eval_param_value<double>("delta_t", variables);
-     auto win_size    = info.eval_param_value<int>("win_size", variables);
-     auto nbins       = info.eval_param_value<int>("nbins", variables);
-     auto bound_decim    = info.eval_param_value<int>("bound_decim", variables);
+        auto samp_rate    = info.eval_param_value<double>("samp_rate", variables);
+        auto delta_t    = info.eval_param_value<double>("delta_t", variables);
+        auto win_size    = info.eval_param_value<int>("win_size", variables);
+        auto nbins       = info.eval_param_value<int>("nbins", variables);
+        auto bound_decim    = info.eval_param_value<int>("bound_decim", variables);
 
-     auto block =  gr::digitizers::stft_goertzl_dynamic_decimated::make(samp_rate, delta_t, win_size, nbins, bound_decim);
+        auto block =  gr::digitizers::stft_goertzl_dynamic_decimated::make(samp_rate, delta_t, win_size, nbins, bound_decim);
 
-     return block;
-  }
+        return block;
+    }
 };
 
 struct TimeDomainSinkMaker : BlockMaker
@@ -1106,14 +1106,14 @@ struct WrReceiverMaker : BlockMaker
 struct AmplitudePhaseAdjusterMaker : BlockMaker
 {
     gr::basic_block_sptr make(const BlockInfo &info, const std::vector<BlockInfo> &variables) override
-            {
-                assert(info.key == amplitude_phase_adjuster_key);
+    {
+        assert(info.key == amplitude_phase_adjuster_key);
 
-                float ampl_cal = info.eval_param_value<float>("ampl_cal", variables);
-                float phi_usr = info.eval_param_value<float>("phi_usr", variables);
-                float phi_fq_usr = info.eval_param_value<float>("phi_fq_usr", variables);
-                return gr::digitizers::amplitude_phase_adjuster::make(ampl_cal, phi_usr, phi_fq_usr);
-            }
+        float ampl_cal = info.eval_param_value<float>("ampl_cal", variables);
+        float phi_usr = info.eval_param_value<float>("phi_usr", variables);
+        float phi_fq_usr = info.eval_param_value<float>("phi_fq_usr", variables);
+        return gr::digitizers::amplitude_phase_adjuster::make(ampl_cal, phi_usr, phi_fq_usr);
+    }
 };
 
 static std::vector<float> makeBandPassFilterFloat(const BlockInfo &info, const std::vector<BlockInfo> &variables)
@@ -1232,49 +1232,49 @@ struct FreqXlatingFirFilterMaker : BlockMaker
 
 BlockFactory::BlockFactory()
 {
-  handlers_b[blocks_null_sink_key] = boost::shared_ptr<BlockMaker>(new NullSinkMaker());
-  handlers_b[blocks_null_source_key] = boost::shared_ptr<BlockMaker>(new NullSourceMaker());
-  handlers_b[blocks_uchar_to_float_key] = boost::shared_ptr<BlockMaker>(new UcharToFloatMaker());
-  handlers_b[blocks_vector_to_stream_key] = boost::shared_ptr<BlockMaker>(new VectorToStreamMaker());
-  handlers_b[blocks_stream_to_vector_key] = boost::shared_ptr<BlockMaker>(new StreamToVectorMaker());
-  handlers_b[blocks_vector_to_streams_key] = boost::shared_ptr<BlockMaker>(new VectorToStreamsMaker());
-  handlers_b[blocks_complex_to_mag_key] = boost::shared_ptr<BlockMaker>(new ComplexToMagMaker());
-  handlers_b[blocks_complex_to_magphase_key] = boost::shared_ptr<BlockMaker>(new ComplexToMagPhaseMaker());
-  handlers_b[analog_sig_source_x_key] = boost::shared_ptr<BlockMaker>(new SigSourceMaker());
-  handlers_b[blocks_throttle_key] = boost::shared_ptr<BlockMaker>(new ThrottleMaker());
-  handlers_b[blocks_tag_share_key] = boost::shared_ptr<BlockMaker>(new TagShareMaker());
-  handlers_b[blocks_tag_debug_key] = boost::shared_ptr<BlockMaker>(new TagDebugMaker());
-  handlers_b[blocks_complex_to_float_key] = boost::shared_ptr<BlockMaker>(new ComplexToFloatMaker());
-  handlers_b[blocks_float_to_complex_key] = boost::shared_ptr<BlockMaker>(new FloatToComplexMaker());
+    handlers_b[blocks_null_sink_key] = boost::shared_ptr<BlockMaker>(new NullSinkMaker());
+    handlers_b[blocks_null_source_key] = boost::shared_ptr<BlockMaker>(new NullSourceMaker());
+    handlers_b[blocks_uchar_to_float_key] = boost::shared_ptr<BlockMaker>(new UcharToFloatMaker());
+    handlers_b[blocks_vector_to_stream_key] = boost::shared_ptr<BlockMaker>(new VectorToStreamMaker());
+    handlers_b[blocks_stream_to_vector_key] = boost::shared_ptr<BlockMaker>(new StreamToVectorMaker());
+    handlers_b[blocks_vector_to_streams_key] = boost::shared_ptr<BlockMaker>(new VectorToStreamsMaker());
+    handlers_b[blocks_complex_to_mag_key] = boost::shared_ptr<BlockMaker>(new ComplexToMagMaker());
+    handlers_b[blocks_complex_to_magphase_key] = boost::shared_ptr<BlockMaker>(new ComplexToMagPhaseMaker());
+    handlers_b[analog_sig_source_x_key] = boost::shared_ptr<BlockMaker>(new SigSourceMaker());
+    handlers_b[blocks_throttle_key] = boost::shared_ptr<BlockMaker>(new ThrottleMaker());
+    handlers_b[blocks_tag_share_key] = boost::shared_ptr<BlockMaker>(new TagShareMaker());
+    handlers_b[blocks_tag_debug_key] = boost::shared_ptr<BlockMaker>(new TagDebugMaker());
+    handlers_b[blocks_complex_to_float_key] = boost::shared_ptr<BlockMaker>(new ComplexToFloatMaker());
+    handlers_b[blocks_float_to_complex_key] = boost::shared_ptr<BlockMaker>(new FloatToComplexMaker());
 
-  handlers_b[block_aggregation_key] = boost::shared_ptr<BlockMaker>(new AggregationMaker());
-  handlers_b[block_amplitude_and_phase_key] = boost::shared_ptr<BlockMaker>(new AmplitudeAndPhaseMaker());
-  handlers_b[block_complex_to_mag_deg_key] = boost::shared_ptr<BlockMaker>(new ComplexToMagDegMaker());
-  handlers_b[block_demux_key] = boost::shared_ptr<BlockMaker>(new DemuxMaker());
-  handlers_b[block_scaling_offset_key] = boost::shared_ptr<BlockMaker>(new ScalingOffsetMaker());
-  handlers_b[block_spectral_peaks_key] = boost::shared_ptr<BlockMaker>(new SpectralPeaksMaker());
-  handlers_b[freq_estimator_key] = boost::shared_ptr<BlockMaker>(new FrequencyEstimatorMaker());
-  handlers_b[cascade_sink_key] = boost::shared_ptr<BlockMaker>(new CascadeSinkMaker());
-  handlers_b[chi_square_fit_key] = boost::shared_ptr<BlockMaker>(new ChiSquareFitMaker());
-  handlers_b[decimate_and_adjust_timebase_key] = boost::shared_ptr<BlockMaker>(new DecimateAndAdjustTimebaseMaker());
-  handlers_b[edge_trigger_ff_key] = boost::shared_ptr<BlockMaker>(new EdgeTriggerMaker());
-  handlers_b[edge_trigger_receiver_f_key] = boost::shared_ptr<BlockMaker>(new EdgeTriggerReceiverMaker());
-  handlers_b[demux_ff_key] = boost::shared_ptr<BlockMaker>(new ExtractorMaker());
-  handlers_b[freq_sink_f_key] = boost::shared_ptr<BlockMaker>(new FreqSinkMaker());
-  handlers_b[function_ff_key] = boost::shared_ptr<BlockMaker>(new FunctionMaker());
-  handlers_b[interlock_generation_ff_key] = boost::shared_ptr<BlockMaker>(new InterlockGenerationMaker());
-  handlers_b[picoscope_3000a_key] = boost::shared_ptr<BlockMaker>(new Ps3000aMaker());
-  handlers_b[picoscope_4000a_key] = boost::shared_ptr<BlockMaker>(new Ps4000aMaker());
-  handlers_b[picoscope_6000_key] = boost::shared_ptr<BlockMaker>(new Ps6000Maker());
-  handlers_b[post_mortem_sink_key] = boost::shared_ptr<BlockMaker>(new PostMortemSinkMaker());
-  handlers_b[signal_averager_key] = boost::shared_ptr<BlockMaker>(new SignalAveragerMaker());
-  handlers_b[stft_algorithms_key] = boost::shared_ptr<BlockMaker>(new StftAlgorithmsMaker());
-  handlers_b[stft_goertzl_dynamic_key] = boost::shared_ptr<BlockMaker>(new StftGoertzlDynamicMaker());
-  handlers_b[time_domain_sink_key] = boost::shared_ptr<BlockMaker>(new TimeDomainSinkMaker());
-  handlers_b[time_realignment_key] = boost::shared_ptr<BlockMaker>(new TimeRealignmentMaker());
-  handlers_b[wr_receiver_f_key] = boost::shared_ptr<BlockMaker>(new WrReceiverMaker());
-  handlers_b[amplitude_phase_adjuster_key] = boost::shared_ptr<BlockMaker>(new AmplitudePhaseAdjusterMaker());
-  handlers_b[freq_xlating_fir_filter_xxx_key] = boost::shared_ptr<BlockMaker>(new FreqXlatingFirFilterMaker());
+    handlers_b[block_aggregation_key] = boost::shared_ptr<BlockMaker>(new AggregationMaker());
+    handlers_b[block_amplitude_and_phase_key] = boost::shared_ptr<BlockMaker>(new AmplitudeAndPhaseMaker());
+    handlers_b[block_complex_to_mag_deg_key] = boost::shared_ptr<BlockMaker>(new ComplexToMagDegMaker());
+    handlers_b[block_demux_key] = boost::shared_ptr<BlockMaker>(new DemuxMaker());
+    handlers_b[block_scaling_offset_key] = boost::shared_ptr<BlockMaker>(new ScalingOffsetMaker());
+    handlers_b[block_spectral_peaks_key] = boost::shared_ptr<BlockMaker>(new SpectralPeaksMaker());
+    handlers_b[freq_estimator_key] = boost::shared_ptr<BlockMaker>(new FrequencyEstimatorMaker());
+    handlers_b[cascade_sink_key] = boost::shared_ptr<BlockMaker>(new CascadeSinkMaker());
+    handlers_b[chi_square_fit_key] = boost::shared_ptr<BlockMaker>(new ChiSquareFitMaker());
+    handlers_b[decimate_and_adjust_timebase_key] = boost::shared_ptr<BlockMaker>(new DecimateAndAdjustTimebaseMaker());
+    handlers_b[edge_trigger_ff_key] = boost::shared_ptr<BlockMaker>(new EdgeTriggerMaker());
+    handlers_b[edge_trigger_receiver_f_key] = boost::shared_ptr<BlockMaker>(new EdgeTriggerReceiverMaker());
+    handlers_b[demux_ff_key] = boost::shared_ptr<BlockMaker>(new ExtractorMaker());
+    handlers_b[freq_sink_f_key] = boost::shared_ptr<BlockMaker>(new FreqSinkMaker());
+    handlers_b[function_ff_key] = boost::shared_ptr<BlockMaker>(new FunctionMaker());
+    handlers_b[interlock_generation_ff_key] = boost::shared_ptr<BlockMaker>(new InterlockGenerationMaker());
+    handlers_b[picoscope_3000a_key] = boost::shared_ptr<BlockMaker>(new Ps3000aMaker());
+    handlers_b[picoscope_4000a_key] = boost::shared_ptr<BlockMaker>(new Ps4000aMaker());
+    handlers_b[picoscope_6000_key] = boost::shared_ptr<BlockMaker>(new Ps6000Maker());
+    handlers_b[post_mortem_sink_key] = boost::shared_ptr<BlockMaker>(new PostMortemSinkMaker());
+    handlers_b[signal_averager_key] = boost::shared_ptr<BlockMaker>(new SignalAveragerMaker());
+    handlers_b[stft_algorithms_key] = boost::shared_ptr<BlockMaker>(new StftAlgorithmsMaker());
+    handlers_b[stft_goertzl_dynamic_key] = boost::shared_ptr<BlockMaker>(new StftGoertzlDynamicMaker());
+    handlers_b[time_domain_sink_key] = boost::shared_ptr<BlockMaker>(new TimeDomainSinkMaker());
+    handlers_b[time_realignment_key] = boost::shared_ptr<BlockMaker>(new TimeRealignmentMaker());
+    handlers_b[wr_receiver_f_key] = boost::shared_ptr<BlockMaker>(new WrReceiverMaker());
+    handlers_b[amplitude_phase_adjuster_key] = boost::shared_ptr<BlockMaker>(new AmplitudePhaseAdjusterMaker());
+    handlers_b[freq_xlating_fir_filter_xxx_key] = boost::shared_ptr<BlockMaker>(new FreqXlatingFirFilterMaker());
 }
 
 
@@ -1282,7 +1282,7 @@ BlockFactory::BlockFactory()
  * Affinity is not parsed as a vector for now...
  */
 void BlockFactory::common_settings(gr::basic_block_sptr block,
-        const BlockInfo &info, const std::vector<BlockInfo> &variables)
+                                   const BlockInfo &info, const std::vector<BlockInfo> &variables)
 {
     if (info.is_param_set("affinity")) {
         auto affinity = info.param_value<int>("affinity");
@@ -1292,17 +1292,17 @@ void BlockFactory::common_settings(gr::basic_block_sptr block,
     if (info.is_param_set("minoutbuf")) {
         auto minoutbuf = info.eval_param_value<int>("minoutbuf", variables);
         if (minoutbuf > 0) {
-          gr::block_sptr blk_ptr = boost::dynamic_pointer_cast<gr::block>(block);
-          gr::hier_block2_sptr hb2_ptr = boost::dynamic_pointer_cast<gr::hier_block2>(block);
-          if(blk_ptr) {
-            blk_ptr->set_min_output_buffer(minoutbuf);
-          }
-          else if (hb2_ptr) {
-            hb2_ptr->set_min_output_buffer(minoutbuf);
-          }
-          else {
-            std::cerr << "cannot set minoutbuf parameter!\n";
-          }
+            gr::block_sptr blk_ptr = boost::dynamic_pointer_cast<gr::block>(block);
+            gr::hier_block2_sptr hb2_ptr = boost::dynamic_pointer_cast<gr::hier_block2>(block);
+            if(blk_ptr) {
+                blk_ptr->set_min_output_buffer(minoutbuf);
+            }
+            else if (hb2_ptr) {
+                hb2_ptr->set_min_output_buffer(minoutbuf);
+            }
+            else {
+                std::cerr << "cannot set minoutbuf parameter!\n";
+            }
         }
     }
 
@@ -1312,13 +1312,13 @@ void BlockFactory::common_settings(gr::basic_block_sptr block,
             gr::block_sptr blk_ptr = boost::dynamic_pointer_cast<gr::block>(block);
             gr::hier_block2_sptr hb2_ptr = boost::dynamic_pointer_cast<gr::hier_block2>(block);
             if(blk_ptr) {
-              blk_ptr->set_max_output_buffer(maxoutbuf);
+                blk_ptr->set_max_output_buffer(maxoutbuf);
             }
             else if (hb2_ptr) {
-              hb2_ptr->set_max_output_buffer(maxoutbuf);
+                hb2_ptr->set_max_output_buffer(maxoutbuf);
             }
             else {
-              std::cerr << "cannot set maxoutbuf parameter!\n";
+                std::cerr << "cannot set maxoutbuf parameter!\n";
             }
         }
     }
@@ -1345,52 +1345,52 @@ gr::basic_block_sptr BlockFactory::make_block(const BlockInfo &info, const std::
 
 std::unique_ptr<FlowGraph> make_flowgraph(std::istream &input)
 {
-	// parse input and replace variables
-	flowgraph::GrcParser parser(input);
-	parser.parse();
-	parser.collapse_variables();
+    // parse input and replace variables
+    flowgraph::GrcParser parser(input);
+    parser.parse();
+    parser.collapse_variables();
 
-	// obtain title if provided
-	std::string title = parser.top_block().param_value("title");
-	if (!title.length())
-	{
-		title = "My Flowgraph";
-	}
-
-	// make graph, add blocks and connections
-	BlockFactory factory;
-
-	std::unique_ptr<FlowGraph> graph(new FlowGraph(title));
-
-	auto variables = parser.variables();
-	std::vector<std::string> disabled_blocks;
- 	for (auto info : parser.blocks())
- 	{
- 	    if (!info.param_value<bool>("_enabled")) {
- 	        disabled_blocks.push_back(info.id);
- 	        continue;
- 	    }
-
-		auto block = factory.make_block(info, variables);
-		graph->add(block, info.id, info.key);
-	}
-
- 	//graph->connect(info.src_id);
-
-	for (const auto info : parser.connections()) {
-	    // connect only if both ends are enabled
-	    if (std::count(disabled_blocks.begin(), disabled_blocks.end(), info.src_id)
-	     || std::count(disabled_blocks.begin(), disabled_blocks.end(), info.dst_id))
-	    {
-	        continue;
-	    }
-	    else
-	    {
-	    graph->connect(info.src_id, info.src_key,
-	                   info.dst_id, info.dst_key);
-	    }
+    // obtain title if provided
+    std::string title = parser.top_block().param_value("title");
+    if (!title.length())
+    {
+        title = "My Flowgraph";
     }
-	return std::move(graph);
+
+    // make graph, add blocks and connections
+    BlockFactory factory;
+
+    std::unique_ptr<FlowGraph> graph(new FlowGraph(title));
+
+    auto variables = parser.variables();
+    std::vector<std::string> disabled_blocks;
+    for (auto info : parser.blocks())
+    {
+        if (!info.param_value<bool>("_enabled")) {
+            disabled_blocks.push_back(info.id);
+            continue;
+        }
+
+        auto block = factory.make_block(info, variables);
+        graph->add(block, info.id, info.key);
+    }
+
+    //graph->connect(info.src_id);
+
+    for (const auto info : parser.connections()) {
+        // connect only if both ends are enabled
+        if (std::count(disabled_blocks.begin(), disabled_blocks.end(), info.src_id)
+                || std::count(disabled_blocks.begin(), disabled_blocks.end(), info.dst_id))
+        {
+            continue;
+        }
+        else
+        {
+            graph->connect(info.src_id, info.src_key,
+                           info.dst_id, info.dst_key);
+        }
+    }
+    return std::move(graph);
 }
 
 }
