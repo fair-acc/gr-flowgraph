@@ -956,19 +956,12 @@ struct Ps6000Maker : BlockMaker
         auto trigger_source = info.param_value("trigger_source");
 
         if (trigger_source != "None") {
-            if (trigger_source == "AUX") {
-                uint32_t pin_number = 0; // fixme .. we dont have pins on the p6000
-                auto trigger_direction = info.param_value<int>("trigger_direction");
-                ps->set_di_trigger(pin_number, static_cast<gr::digitizers::trigger_direction_t>(trigger_direction));
-            }
-            else {
-                auto trigger_direction = info.param_value<int>("trigger_direction");
-                auto trigger_threshold = info.param_value<double>("trigger_threshold");
-                ps->set_aichan_trigger(
-                        trigger_source,
-                        static_cast<gr::digitizers::trigger_direction_t>(trigger_direction),
-                        trigger_threshold);
-            }
+            auto trigger_direction = info.param_value<int>("trigger_direction");
+            auto trigger_threshold = info.param_value<double>("trigger_threshold");
+            ps->set_aichan_trigger(
+                    trigger_source,
+                    static_cast<gr::digitizers::trigger_direction_t>(trigger_direction),
+                    trigger_threshold);
         }
 
         if (acquisition_mode == "Streaming") {
