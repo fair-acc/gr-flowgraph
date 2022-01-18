@@ -745,8 +745,8 @@ struct Ps3000aMaker : BlockMaker
         }
 
         if (acquisition_mode == "Streaming") {
-            auto buff_size = info.eval_param_value<int>("buff_size", variables);
-            auto poll_rate = info.eval_param_value<int>("poll_rate", variables);
+            int buff_size = info.eval_param_value<int>("buff_size", variables);
+            float poll_rate = info.eval_param_value<float>("poll_rate", variables);
             ps->set_buffer_size(buff_size);
             ps->set_streaming(poll_rate);
         }
@@ -876,8 +876,8 @@ struct Ps4000aMaker : BlockMaker
         }
 
         if (acquisition_mode == "Streaming") {
-            auto buff_size = info.eval_param_value<int>("buff_size", variables);
-            auto poll_rate = info.eval_param_value<int>("poll_rate", variables);
+            int buff_size = info.eval_param_value<int>("buff_size", variables);
+            float poll_rate = info.eval_param_value<float>("poll_rate", variables);
             ps->set_buffer_size(buff_size);
             ps->set_streaming(poll_rate);
         }
@@ -965,8 +965,8 @@ struct Ps6000Maker : BlockMaker
         }
 
         if (acquisition_mode == "Streaming") {
-            auto buff_size = info.eval_param_value<int>("buff_size", variables);
-            auto poll_rate = info.eval_param_value<int>("poll_rate", variables);
+            int buff_size = info.eval_param_value<int>("buff_size", variables);
+            float poll_rate = info.eval_param_value<float>("poll_rate", variables);
             ps->set_buffer_size(buff_size);
             ps->set_streaming(poll_rate);
         }
