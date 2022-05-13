@@ -7,7 +7,7 @@ gr-flowgraph as well supports many native [GNU Radio](https://wiki.gnuradio.org)
 This project was created because there are various use-cases for which a native python code generation via `gnuradio-companion` (creation of standalone C++ application) is not sufficient:
 
 - There is a host application which runs/controls the flowgraph.
-- The host application whould be able to start/stop/reload the flowgraph, without restarting itself.
+- The host application should be able to start/stop/reload the flowgraph, without restarting itself.
 - The host application has callbacks inside some of the blocks which should be served (E.g. see [gr-digitizer](https://github.com/fair-acc/gr-digitizers)).
 - python is not available on the runtime environment.
 
