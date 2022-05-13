@@ -4,7 +4,7 @@ gr-flowgraph is used to parse and run a [GNU Radio](https://wiki.gnuradio.org) `
 
 gr-flowgraph as well supports many native [GNU Radio](https://wiki.gnuradio.org) blocks.
 
-This project was created, because there are various use-cases for which a native python code generation via `gnuradio-companion` (creation of standalone C++ application) is not sufficient:
+This project was created because there are various use-cases for which a native python code generation via `gnuradio-companion` (creation of standalone C++ application) is not sufficient:
 
 - There is a host application which runs/controls the flowgraph.
 - The host application whould be able to start/stop/reload the flowgraph, without restarting itself.
